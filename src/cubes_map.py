@@ -36,8 +36,8 @@ class CubesMap:
             _lib.free_cubes_map(self.cube_map)
     
     def __getitem__(self, cube: Cube):
-        next_move_to_make = _lib.get_cube_from_map(self.cube_map, cube.cube)
-        if next_move_to_make == ' ':
+        next_move_to_make = _lib.get_cube_from_map(self.cube_map, cube.cube).decode('ascii')
+        if next_move_to_make == '-':
             return None
         else:
             return next_move_to_make

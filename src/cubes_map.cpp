@@ -24,7 +24,7 @@ void read_cubes_map(CubesMap& result, const char* filename) {
         // Read all cube entries in the buffer
         while (read_bytes - cursor >= 25) {
             // Read the cube faces, as 6 uint32_t (see cube.h)
-            uint32_t faces[6];
+            uint32_t faces[6] = {0};
             for (int i = 0; i < 6; i++) {
                 faces[i] = static_cast<uint32_t>(static_cast<unsigned char>(buffer[cursor++]));
                 faces[i] |= static_cast<uint32_t>(static_cast<unsigned char>(buffer[cursor++]) << 8);
@@ -36,7 +36,7 @@ void read_cubes_map(CubesMap& result, const char* filename) {
             char move = buffer[cursor++];
 
             // Insert the cube inside our map
-            StdCube std_cube;   
+            StdCube std_cube;
             std::copy(std::begin(faces), std::end(faces), std_cube.begin());
             result[std_cube] = move;
         }
@@ -56,9 +56,15 @@ extern "C" CubesMap* load_cubes_map(const char* filename) {
 }
 
 extern "C" char get_cube_from_map(const CubesMap* result, const T_CUBE cube) {
-    auto std_cube = reinterpret_cast<const StdCube*>(cube);
-    auto it = result->find(*std_cube);
+    StdCube std_cube;
+    // The upper 5 bits of each face are not used,
+    // but we need to set them to 0, otherwise the
+    // hash will be different.
+    for (int i = 0; i < 6; i++) {
+        std_cube[i] = cube[i] & 0x7ffffff; // Lower 27 bits
+    }
 
+    auto it = result->find(std_cube);
     if (it == result->end()) {
         // Cube not found in the map
         return '-'; // Don't use \0, it will be interpreted as a solved cube

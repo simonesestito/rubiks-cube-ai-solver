@@ -49,7 +49,7 @@ def test_cubes_map():
         for _ in range(7):
             next_move = cubes_map[cube]
             assert next_move is not None
-            cube.perform_action()
+            cube.perform_action(next_move)
             if cube.is_solved():
                 break
     

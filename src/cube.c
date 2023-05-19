@@ -7,12 +7,8 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <stdbool.h>
-
-#define T_CUBE_FACE uint32_t
-#define T_CUBE T_CUBE_FACE*
-#define T_CUBE_CELL uint8_t
+#include "cube.h"
 
 /*
  * A cube is represented as 6 uint32_t,
@@ -33,15 +29,15 @@
 
 void reset_cube(T_CUBE cube);
 
-T_CUBE_FACE* create_cube() {
+T_CUBE create_cube() {
     // Remember to free the cube!
-    T_CUBE_FACE* cube = malloc(6 * sizeof(T_CUBE_FACE));
+    T_CUBE cube = malloc(6 * sizeof(T_CUBE_FACE));
     reset_cube(cube);
     return cube;
 }
 
-T_CUBE_FACE* create_cube_from(uint8_t* flatten_faces) {
-    T_CUBE_FACE* cube = malloc(6 * sizeof(T_CUBE_FACE));
+T_CUBE create_cube_from(uint8_t* flatten_faces) {
+    T_CUBE cube = malloc(6 * sizeof(T_CUBE_FACE));
 
     // Zero out the cube
     memset(cube, 0, 6 * sizeof(T_CUBE_FACE));

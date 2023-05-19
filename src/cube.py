@@ -7,10 +7,9 @@ with all previous stages to get to this point.
 
 import ctypes
 import os
-import sys
 
 # Load the shared library containing the C functions
-_lib = ctypes.CDLL(os.path.dirname(os.path.realpath(sys.argv[0])) + '/libcube.so')
+_lib = ctypes.CDLL(os.path.dirname(os.path.realpath(__file__)) + '/libcube.so')
 
 # Define the return types and argument types
 
@@ -167,5 +166,13 @@ class Cube:
       for row in range(3):
         for col in range(3):
           if self.get_cell(face, row, col) != faces[face][row][col]:
+            return False
+    return True
+  
+  def __eq__(self, other):
+    for face in range(6):
+      for row in range(3):
+        for col in range(3):
+          if self.get_cell(face, row, col) != other.get_cell(face, row, col):
             return False
     return True

@@ -312,7 +312,7 @@ void face5_clock(T_CUBE cube) {
     for (T_CUBE_CELL i = 0; i < 3; i++) {
         // Perform swaps!
         SET_CUBE(cube[1], 0, i, GET_CUBE(old[3], i, 2));
-        SET_CUBE(cube[2], i, 0, GET_CUBE(old[1], 0, i));
+        SET_CUBE(cube[2], i, 0, GET_CUBE(old[1], 0, 2-i));
         SET_CUBE(cube[4], 2, i, GET_CUBE(old[2], i, 0));
         SET_CUBE(cube[3], i, 2, GET_CUBE(old[4], 2, 2-i));
     }
@@ -328,9 +328,9 @@ void face5_counterclock(T_CUBE cube) {
 
     for (T_CUBE_CELL i = 0; i < 3; i++) {
         // Perform swaps!
-        SET_CUBE(cube[1], 0, i, GET_CUBE(old[2], i, 0));
-        SET_CUBE(cube[2], i, 0, GET_CUBE(old[4], 2, i));
         SET_CUBE(cube[4], 2, i, GET_CUBE(old[3], 2-i, 2));
+        SET_CUBE(cube[2], i, 0, GET_CUBE(old[4], 2, i));
+        SET_CUBE(cube[1], 0, i, GET_CUBE(old[2], 2-i, 0));
         SET_CUBE(cube[3], i, 2, GET_CUBE(old[1], 0, i));
     }
 }

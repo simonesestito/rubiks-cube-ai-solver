@@ -5,10 +5,9 @@ Rubik's Cube map of solved cubes.
 import ctypes
 from cube import Cube, _cube_type
 import os
-import sys
 
 # Load the shared library containing the C functions
-_lib = ctypes.CDLL(os.path.dirname(os.path.realpath(sys.argv[0])) + '/libcubes_map.so')
+_lib = ctypes.CDLL(os.path.dirname(os.path.realpath(__file__)) + '/libcubes_map.so')
 
 # Define the return types and argument types
 _cube_map_type = ctypes.c_void_p
@@ -41,10 +40,3 @@ class CubesMap:
             return None
         else:
             return next_move_to_make
-
-if __name__ == '__main__':
-    cubes_map = CubesMap()
-    cube = Cube()
-    print(cubes_map[cube])
-    cube.perform_action('F')
-    print(cubes_map[cube])

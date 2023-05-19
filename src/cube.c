@@ -347,6 +347,12 @@ void perform_action(T_CUBE cube, char* actions) {
                 case 'B': face5_clock(cube); break;
                 case 'L': face2_clock(cube); break;
                 case 'D': face4_clock(cube); break;
+                case 'f': face0_counterclock(cube); break;
+                case 'r': face3_counterclock(cube); break;
+                case 'u': face1_counterclock(cube); break;
+                case 'b': face5_counterclock(cube); break;
+                case 'l': face2_counterclock(cube); break;
+                case 'd': face4_counterclock(cube); break;
             }
         } else if (action[1] == '\'') {
             switch (action[0]) {

@@ -2,18 +2,18 @@
 
 CC = gcc
 CPP = g++
-CFLAGS = -O2
+CFLAGS = -O2 -fPIC
 
-all: src/cube.so src/cubes_map_gen
+all: src/libcube.so src/cubes_map_gen src/libcubes_map.so
 
 clean:
-	rm -f src/cube.so src/cube.o src/cubes_map_gen
+	rm -f src/cube.so src/cubes_map.so src/cubes_map_gen
 
-src/cubes_map_gen: src/cubes_map_gen.cpp src/cube.c
+src/libcubes_map.so: src/cubes_map.cpp src/cube.c src/cubes_map_common.cpp
+	$(CPP) $(CFLAGS) -shared -o $@ $^
+
+src/cubes_map_gen: src/cubes_map_gen.cpp src/cube.c src/cubes_map_common.cpp
 	$(CPP) $(CFLAGS) -o $@ $^
 
-src/cube.so: src/cube.o
+src/libcube.so: src/cube.c
 	$(CC) $(CFLAGS) -shared -o $@ $^
-
-src/cube.o: src/cube.c
-	$(CC) $(CFLAGS) -c -o $@ $^

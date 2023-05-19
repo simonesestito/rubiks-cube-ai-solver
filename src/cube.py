@@ -6,9 +6,11 @@ with all previous stages to get to this point.
 '''
 
 import ctypes
+import os
+import sys
 
 # Load the shared library containing the C functions
-_lib = ctypes.CDLL('./cube.so')
+_lib = ctypes.CDLL(os.path.dirname(os.path.realpath(sys.argv[0])) + '/libcube.so')
 
 # Define the return types and argument types
 

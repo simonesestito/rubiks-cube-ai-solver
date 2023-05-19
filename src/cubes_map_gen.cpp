@@ -34,6 +34,7 @@ void save_cube_to_file(const CubesMap& cubes_map, const char* filename) {
         for (uint32_t face : it.first) {
             // Encode each uint32_t in 4 bytes,
             // endianness independently
+            face &= 0x7ffffff;
             buffer[written_bytes++] = static_cast<char>(face & 0xFF);
             buffer[written_bytes++] = static_cast<char>((face >> 8) & 0xFF);
             buffer[written_bytes++] = static_cast<char>((face >> 16) & 0xFF);

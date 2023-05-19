@@ -7,7 +7,6 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include "cube.h"
 
 /*
@@ -31,13 +30,13 @@ void reset_cube(T_CUBE cube);
 
 T_CUBE create_cube() {
     // Remember to free the cube!
-    T_CUBE cube = malloc(6 * sizeof(T_CUBE_FACE));
+    T_CUBE cube = (T_CUBE) malloc(6 * sizeof(T_CUBE_FACE));
     reset_cube(cube);
     return cube;
 }
 
 T_CUBE create_cube_from(uint8_t* flatten_faces) {
-    T_CUBE cube = malloc(6 * sizeof(T_CUBE_FACE));
+    T_CUBE cube = (T_CUBE) malloc(6 * sizeof(T_CUBE_FACE));
 
     // Zero out the cube
     memset(cube, 0, 6 * sizeof(T_CUBE_FACE));
@@ -62,6 +61,23 @@ void reset_cube(T_CUBE cube) {
                 SET_CUBE(cube[face], row, col, face);
             }
         }
+    }
+}
+
+void perform_action_short(T_CUBE cube, char action) {
+    switch (action) {
+        case 'F': face0_clock(cube); break;
+        case 'R': face3_clock(cube); break;
+        case 'U': face1_clock(cube); break;
+        case 'B': face5_clock(cube); break;
+        case 'L': face2_clock(cube); break;
+        case 'D': face4_clock(cube); break;
+        case 'f': face0_counterclock(cube); break;
+        case 'r': face3_counterclock(cube); break;
+        case 'u': face1_counterclock(cube); break;
+        case 'b': face5_counterclock(cube); break;
+        case 'l': face2_counterclock(cube); break;
+        case 'd': face4_counterclock(cube); break;
     }
 }
 
@@ -296,7 +312,7 @@ void face5_clock(T_CUBE cube) {
     for (T_CUBE_CELL i = 0; i < 3; i++) {
         // Perform swaps!
         SET_CUBE(cube[1], 0, i, GET_CUBE(old[3], i, 2));
-        SET_CUBE(cube[2], i, 0, GET_CUBE(old[1], 0, 2-i));
+        SET_CUBE(cube[2], i, 0, GET_CUBE(old[1], 0, i));
         SET_CUBE(cube[4], 2, i, GET_CUBE(old[2], i, 0));
         SET_CUBE(cube[3], i, 2, GET_CUBE(old[4], 2, 2-i));
     }
@@ -349,7 +365,7 @@ void perform_action(T_CUBE cube, char* actions) {
 
 //! Need to free the returned array!
 uint8_t* _solved_faces(T_CUBE cube) {
-    uint8_t* solved = malloc(6 * sizeof(uint8_t));
+    uint8_t* solved = (uint8_t*) malloc(6 * sizeof(uint8_t));
 
     for (uint8_t face = 0; face < 6; face++) {
         T_CUBE_CELL center = GET_CUBE(cube[face], 1, 1);
@@ -387,7 +403,7 @@ uint8_t solved_faces(T_CUBE cube) {
     return total;
 }
 
-bool is_solved(T_CUBE cube) {
+int is_solved(T_CUBE cube) {
     return solved_faces(cube) == 6;
 }
 

@@ -3,6 +3,7 @@
 
 #include <iostream> 
 #include <fstream>
+#include <filesystem>
 
 /**
  * Read cubes map from a file on disk.
@@ -17,9 +18,17 @@ void read_cubes_map(CubesMap& result, const char* filename) {
     stream.read(buffer, 65536);
     std::size_t read_bytes = static_cast<std::size_t>(stream.gcount());
 
+    std::filesystem::path file_path{filename};
+    std::uintmax_t file_size = std::filesystem::file_size(file_path);
+    std::uintmax_t read_file_total = 0;
+
     while (read_bytes > 0) {
         // Parse current read buffer
         std::size_t cursor = 0;
+
+	// Update read progress
+	read_file_total += read_bytes;
+	printf("Reading cubes map... (%.1f%%)\r", read_file_total*1.0 / file_size * 100.0);
 
         // Read all cube entries in the buffer
         while (read_bytes - cursor >= 25) {
@@ -45,6 +54,7 @@ void read_cubes_map(CubesMap& result, const char* filename) {
         stream.read(buffer, 65536);
         read_bytes = static_cast<std::size_t>(stream.gcount());
     }
+    std::cout << std::endl;
 
     stream.close();
 }

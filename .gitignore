@@ -1,3 +1,7 @@
+.vscode/
 .venv/
 *.so
+*.o
+*.bin
+cubes_map_gen
 notebooks/*.c

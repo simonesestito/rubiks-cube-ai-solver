@@ -8,6 +8,7 @@
 #define T_CUBE_CELL uint8_t
 
 T_CUBE create_cube();
+void perform_action_short(T_CUBE cube, char action);
 
 void face0_clock(T_CUBE cube);
 void face0_counterclock(T_CUBE cube);

@@ -6,3 +6,4 @@
 cubes_map_gen
 notebooks/*.c
 __pycache__/
+cubes_map.bin

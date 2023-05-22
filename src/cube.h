@@ -3,6 +3,23 @@
 
 #include <stdint.h>
 
+/*
+ * A cube is represented as 6 uint32_t,
+ * each for every face of the cube.
+ *
+ * We need to encode 6 colors, so 3 bits each are enough
+ * but we have 9 cells for each face.
+ * That adds up to 3*9 = 27 bits, so we use uint32_t
+ * for each face.
+ * That being said, a cube is an array of 6 uint32_t.
+ */
+
+#define GET_CUBE(face, row, col) \
+    (((face) >> 3*((row)*3+(col))) & 0b111)
+
+#define SET_CUBE(face, row, col, v) \
+    (face) = ((v)&0b111) << 3*((row)*3+(col)) | ((face) & (0xFFFFFFFF ^ (0b111 << 3*((row)*3+(col)))))
+
 #define T_CUBE_FACE uint32_t
 #define T_CUBE T_CUBE_FACE*
 #define T_CUBE_CELL uint8_t
@@ -22,5 +39,6 @@ void face4_clock(T_CUBE cube);
 void face4_counterclock(T_CUBE cube);
 void face5_clock(T_CUBE cube);
 void face5_counterclock(T_CUBE cube);
+
 
 #endif // CUBE_H

@@ -79,6 +79,12 @@ def getColorsFromCubeFace(cube_face_img):
       for pixel in cube_points
   ]).reshape(3,3)
 
+  # FIXME: Remove this, debug only
+  for i in range(3):
+    for j in range(3):
+      if colors[i,j] is None:
+        print('Unable to recognize color', cube_points[i*3+j], 'at position', [i, j])
+
   return colors
 
 #recognize the color of the nine points took from the image
@@ -88,4 +94,8 @@ def recognizeColor(pixel):
       return color
   
 def sortFaces(cube):
+  # Assert that every color is present
+  for i in range(6):
+    assert not (cube[i] == None).any(), "Missing colors in face " + str(i)
+
   cube.sort(key = lambda x:x[1,1])

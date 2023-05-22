@@ -1,7 +1,9 @@
 import pytest
 import random
+import os
 from cube import Cube
 from cubes_map import CubesMap
+from main import load_cube_faces
 
 RANDOM_TEST_REPS = 1000
 
@@ -185,3 +187,102 @@ def test_cube_random_2():
         [o,b,r],
         [g,o,b]],
     ], "U F' L' F' R R U' F' U' D' B R R B' U B B U U R R D D R R F F U")
+
+g, w, o, r, y, b = 0, 1, 2, 3, 4, 5
+CUBE_0 = Cube([
+        [[y, o, r],
+         [r, g, w],
+         [w, g, o]],
+        [[w, b, b],
+         [y, w, g],
+         [g, r, y]],
+        [[g, w, r],
+         [o, o, r],
+         [o, g, w]],
+        [[r, y, g],
+         [g, r, o],
+         [b, y, o]],
+        [[b, w, g],
+         [b, y, w],
+         [r, y, o]],
+        [[w, r, y],
+         [b, b, b],
+         [y, o, b]],
+    ])
+
+def test_color_detection_cube_0():
+    rootCube = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "..", "assets", "images", "cube-0")
+    assert load_cube_faces([
+        os.path.join(rootCube, 'face0.jpg'),
+        os.path.join(rootCube, 'face1.jpg'),
+        os.path.join(rootCube, 'face2.jpg'),
+        os.path.join(rootCube, 'face3.jpg'),
+        os.path.join(rootCube, 'face4.jpg'),
+        os.path.join(rootCube, 'face5.jpg'),
+    ]) == CUBE_0
+
+def test_color_shuffle_cube_0():
+    rootCube = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "..", "assets", "images", "cube-0")
+    cube_faces_img = [
+        os.path.join(rootCube, 'face0.jpg'),
+        os.path.join(rootCube, 'face1.jpg'),
+        os.path.join(rootCube, 'face2.jpg'),
+        os.path.join(rootCube, 'face3.jpg'),
+        os.path.join(rootCube, 'face4.jpg'),
+        os.path.join(rootCube, 'face5.jpg'),
+    ]
+
+    for _ in range(10):
+        random.shuffle(cube_faces_img)
+        assert load_cube_faces(cube_faces_img) == CUBE_0
+
+CUBE_1 = Cube([
+    [[b, o, b],
+     [y, g, b],
+     [g, r, r]],
+    [[b, y, y],
+     [w, w, w],
+     [o, g, o]],
+    [[r, r, w],
+     [b, o, b],
+     [y, o, w]],
+    [[y, o, r],
+     [r, r, r],
+     [g, g, y]],
+    [[o, g, w],
+     [y, y, w],
+     [r, b, g]],
+    [[g, g, w],
+     [y, b, w],
+     [o, o, b]],
+])
+
+def test_color_detection_cube_1():
+    rootCube = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "..", "assets", "images", "cube-1")
+    assert load_cube_faces([
+        os.path.join(rootCube, 'face0.jpg'),
+        os.path.join(rootCube, 'face1.jpg'),
+        os.path.join(rootCube, 'face2.jpg'),
+        os.path.join(rootCube, 'face3.jpg'),
+        os.path.join(rootCube, 'face4.jpg'),
+        os.path.join(rootCube, 'face5.jpg'),
+    ]) == CUBE_1
+
+def test_color_shuffle_cube_1():
+    rootCube = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "..", "assets", "images", "cube-1")
+    cube_faces_img = [
+        os.path.join(rootCube, 'face0.jpg'),
+        os.path.join(rootCube, 'face1.jpg'),
+        os.path.join(rootCube, 'face2.jpg'),
+        os.path.join(rootCube, 'face3.jpg'),
+        os.path.join(rootCube, 'face4.jpg'),
+        os.path.join(rootCube, 'face5.jpg'),
+    ]
+
+    for _ in range(10):
+        random.shuffle(cube_faces_img)
+        assert load_cube_faces(cube_faces_img) == CUBE_1

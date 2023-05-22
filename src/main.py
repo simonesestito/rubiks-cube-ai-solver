@@ -22,7 +22,8 @@ def load_cube_faces(faces_paths, width=100):
         str(len(faces_paths)) + " were given"
 
     cube_faces = []
-    for face_path in faces_paths:
+    for i, face_path in enumerate(faces_paths):
+        print('Loading face', i)
         face = load_cube_face_image(face_path)
         matches = getFaceShape(face)
         points = getFaceVertices(matches)
@@ -33,13 +34,16 @@ def load_cube_faces(faces_paths, width=100):
     return Cube(cube_faces)
 
 if __name__ == '__main__':
+    import sys
+
+    rootCube = sys.argv[1] if len(sys.argv) > 1 else 'cube-0'
     listFaces = [
-        ROOT_DRIVE + '/cube-0/face0.jpg',
-        ROOT_DRIVE + '/cube-0/face1.jpg',
-        ROOT_DRIVE + '/cube-0/face2.jpg',
-        ROOT_DRIVE + '/cube-0/face3.jpg',
-        ROOT_DRIVE + '/cube-0/face4.jpg',
-        ROOT_DRIVE + '/cube-0/face5.jpg',
+        os.path.join(ROOT_DRIVE, rootCube, 'face0.jpg'),
+        os.path.join(ROOT_DRIVE, rootCube, 'face1.jpg'),
+        os.path.join(ROOT_DRIVE, rootCube, 'face2.jpg'),
+        os.path.join(ROOT_DRIVE, rootCube, 'face3.jpg'),
+        os.path.join(ROOT_DRIVE, rootCube, 'face4.jpg'),
+        os.path.join(ROOT_DRIVE, rootCube, 'face5.jpg'),
     ]
 
     cube = load_cube_faces(listFaces)

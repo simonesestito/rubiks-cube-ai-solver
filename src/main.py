@@ -6,68 +6,38 @@ from color_extractor import *
 
 ROOT_DRIVE = '/mnt/c/Users/SABRINA/Downloads/'
 
-origin = cv2.imread(ROOT_DRIVE+"faccia1.jpeg")
-width = 100
-height =int(origin.shape[0]*width/origin.shape[1])
-faccia1 = cv2.resize(
-    origin,
-    (width,height)
-)
+def loadCubeFaceImage(imagePath):
+    originalImage = cv2.imread(imagePath)
+    width = 100
+    height =int(originalImage.shape[0]*width/originalImage.shape[1])
+    return cv2.resize(
+        originalImage,
+        (width,height)
+    )
 
-origin = cv2.imread(ROOT_DRIVE+"faccia2.jpeg")
-width = 100
-height =int(origin.shape[0]*width/origin.shape[1])
-faccia2 = cv2.resize(
-    origin,
-    (width,height)
-)
+def loadCubeFaces(facesPath):
+    assert len(facesPath) == 6, "The cube has 6 faces: " + str(len(facesPath)) + " were given"
 
-origin = cv2.imread(ROOT_DRIVE+"faccia3.jpeg")
-width = 100
-height =int(origin.shape[0]*width/origin.shape[1])
-faccia3 = cv2.resize(
-    origin,
-    (width,height)
-)
+    facesCube = []
+    for facePath in listFaces:
+        face = loadCubeFaceImage(facePath)
+        matches = getFaceShape(face)
+        points = getFaceVertices(matches)
+        cubeFaceImg = deleteImageOutline(face, points, width)
+        facesCube.append(getColorsFromCubeFace(cubeFaceImg))
 
-origin = cv2.imread(ROOT_DRIVE+"faccia4.jpeg")
-width = 100
-height =int(origin.shape[0]*width/origin.shape[1])
-faccia4 = cv2.resize(
-    origin,
-    (width,height)
-)
+    sortFaces(facesCube)
+    return Cube(facesCube)
 
-origin = cv2.imread(ROOT_DRIVE+"faccia5.jpeg")
-width = 100
-height =int(origin.shape[0]*width/origin.shape[1])
-faccia5 = cv2.resize(
-    origin,
-    (width,height)
-)
+if __name__ == '__main__':
+    listFaces = [
+        ROOT_DRIVE + 'cube-faces/face1.jpg',
+        ROOT_DRIVE + 'cube-faces/face2.jpg',
+        ROOT_DRIVE + 'cube-faces/face3.jpg',
+        ROOT_DRIVE + 'cube-faces/face4.jpg',
+        ROOT_DRIVE + 'cube-faces/face5.jpg',
+        ROOT_DRIVE + 'cube-faces/face6.jpg',
+    ]
 
-origin = cv2.imread(ROOT_DRIVE+"faccia6.jpeg")
-width = 100
-height =int(origin.shape[0]*width/origin.shape[1])
-faccia6 = cv2.resize(
-    origin,
-    (width,height)
-)
-
-
-listFaces = [faccia6, faccia2, faccia3, faccia4, faccia5, faccia1]
-facesCube = []
-for face in listFaces: 
-    matches = getFaceShape(face)
-    points = getFaceVertices(matches)
-    print(points)
-    cube_face_img = deleteImageOutline(face, points, width)
-    facesCube.append(getColorsFromCubeFace(cube_face_img))
-
-print(facesCube)
-
-sortFaces(facesCube)
-
-cube = Cube(facesCube)
-print(cube)
-
+    cube = loadCubeFaces(listFaces)
+    print(cube)

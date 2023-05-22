@@ -73,13 +73,12 @@ def getColorsFromCubeFace(cube_face_img):
       for y in range(cube_face_step, cube_face_hsv.shape[0]-1, cube_face_step*2)
       for x in range(cube_face_step, cube_face_hsv.shape[0]-1, cube_face_step*2)
   ]
-  print(cube_points)
+
   colors = np.array([
       recognizeColor(pixel)
       for pixel in cube_points
   ]).reshape(3,3)
-  # use matrix representetion
-  print(colors)
+
   return colors
 
 #recognize the color of the nine points took from the image
@@ -90,42 +89,3 @@ def recognizeColor(pixel):
   
 def sortFaces(cube):
   cube.sort(key = lambda x:x[1,1])
-  
-
-
-if __name__ == '__main__':
-    DRIVE_FS_MOUNTPOINT = '/content/drive/MyDrive'
-    DRIVE_IN_PATH = '/computer_vision/'
-    ROOT_DRIVE = '/mnt/c/Users/SABRINA/Downloads/'
-    
-    import os.path, os
-    
-    # assert os.path.isdir(DRIVE_FS_MOUNTPOINT), 'Google Drive has not been mounted from the side menu yet'
-    # print('✔️ Google Drive mounted')
-    
-    # assert os.path.isdir(ROOT_DRIVE), f'Project folder not found. Please create a folder in this location on your Google Drive: {DRIVE_IN_PATH}'
-    # print('✔️ Project folder found')
-    
-
-    import cv2
-    import numpy as np
-    
-    
-    
-    # Load image and downscale, keeping the aspect ratio
-    origin = cv2.imread(ROOT_DRIVE+"rubik.jpeg")
-    width = 100
-    height = int(origin.shape[0]*width/origin.shape[1])
-    img = cv2.resize(
-        origin,
-        (width,height)
-    )
-    # cv2_imshow(img)
-    
-    matches = getFaceShape(img)
-    print(matches)
-    points = getFaceVertices(matches)
-    cube_face_img = deleteImageOutline(img, points, width)
-    cv2.imshow("cube", cube_face_img)
-    cv2.waitKey(0)
-    getColorsFromCubeFace(cube_face_img)

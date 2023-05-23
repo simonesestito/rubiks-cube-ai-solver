@@ -17,20 +17,18 @@ possible_moves = len(cubes_dataset.CUBE_MOVES_ENCODING)
 class CubeModel(nn.Module):
     def __init__(self):
         super().__init__()
+        hidden_layer_size = faces_per_cube * 13 * 2
+
+        hidden_layers = [
+            nn.Linear(hidden_layer_size, hidden_layer_size),
+            nn.Sigmoid(),
+        ] * 13
+
         self.mlp = nn.Sequential(
-            nn.Linear(cells_per_face * faces_per_cube, cells_per_face * faces_per_cube * 2),
+            nn.Linear(cells_per_face * faces_per_cube, hidden_layer_size),
             nn.Sigmoid(),
-            nn.Linear(cells_per_face * faces_per_cube * 2, cells_per_face * faces_per_cube * 2),
-            nn.Sigmoid(),
-            nn.Linear(cells_per_face * faces_per_cube * 2, cells_per_face * faces_per_cube * 2),
-            nn.Sigmoid(),
-            nn.Linear(cells_per_face * faces_per_cube * 2, cells_per_face * faces_per_cube * 2),
-            nn.Sigmoid(),
-            nn.Linear(cells_per_face * faces_per_cube * 2, cells_per_face * faces_per_cube * 2),
-            nn.Sigmoid(),
-            nn.Linear(cells_per_face * faces_per_cube * 2, cells_per_face * faces_per_cube * 2),
-            nn.Sigmoid(),
-            nn.Linear(cells_per_face * faces_per_cube * 2, possible_moves),
+            *hidden_layers,
+            nn.Linear(hidden_layer_size, possible_moves),
         )
         self.flatten = nn.Flatten()
 

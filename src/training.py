@@ -17,10 +17,11 @@ else:
     print('[pytorch] Creating new model from SCRATCH...')
     model = CubeModel()
 model = model.to(PYTORCH_DEVICE)
+print(model)
 
 # Hyper-parameters
-LEARNING_RATE = 0.001
-BATCH_SIZE = 1000
+LEARNING_RATE = 0.01
+BATCH_SIZE = 500
 EPOCHS = 10
 
 print('[pytorch] Using hyper-parameters:')
@@ -30,7 +31,7 @@ print('[pytorch] EPOCHS:', EPOCHS)
 
 # Loss and optimizer
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)
+optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
 # Train the model
 def train_loop(model, loss_fn, optimizer):

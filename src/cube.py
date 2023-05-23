@@ -58,8 +58,8 @@ class Cube:
       self.cube = _lib.create_cube_from(_faces_type(*[
         ctypes.c_uint8(faces[face][row][col])
         for face in range(6)
-        for row in range(3)
-        for col in range(3)
+        for row in range(2)
+        for col in range(2)
       ]))
 
   def __del__(self):

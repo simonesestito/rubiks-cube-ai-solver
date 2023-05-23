@@ -4,7 +4,7 @@
 #include <array>
 #include <unordered_map>
 
-typedef std::array<uint32_t, 6> StdCube;
+typedef std::array<uint16_t, 6> StdCube;
 
 struct CubeHasher {
     std::size_t operator()(const StdCube& c) const;

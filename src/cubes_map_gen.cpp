@@ -31,21 +31,19 @@ void save_cube_to_file(const CubesMap& cubes_map, const char* filename) {
 
     for (const auto& it : cubes_map) {
         // Encode 6 uint32_t in our buffer
-        for (uint32_t face : it.first) {
-            // Encode each uint32_t in 4 bytes,
+        for (uint16_t face : it.first) {
+            // Encode each uint16_t in 4 bytes,
             // endianness independently
-            face &= 0x7ffffff;
+            face &= 0xfff; // Only 12 bits are used
             buffer[written_bytes++] = static_cast<char>(face & 0xFF);
             buffer[written_bytes++] = static_cast<char>((face >> 8) & 0xFF);
-            buffer[written_bytes++] = static_cast<char>((face >> 16) & 0xFF);
-            buffer[written_bytes++] = static_cast<char>((face >> 24) & 0xFF);
         }
 
         // Encode the move (char)
         buffer[written_bytes++] = it.second;
 
         // If the buffer is full, write it to the file
-        if (65536 - written_bytes < 25) {
+        if (65536 - written_bytes < 13) { // 13 = 6 * 2Byte + 1
             file.write(buffer, 65536);
             written_bytes = 0;
         }

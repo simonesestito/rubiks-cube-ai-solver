@@ -10,7 +10,7 @@ import torch
 
 class CubeSample(ctypes.Structure):
     _fields_ = [
-        ("cube", ctypes.c_uint8 * 3 * 3 * 6),
+        ("cube", ctypes.c_uint8 * 2 * 2 * 6),
         ("move", ctypes.c_char)
     ]
 
@@ -51,7 +51,7 @@ CUBE_MOVES_ENCODING = {
     'f': 9,
     'B': 10,
     'b': 11,
-    ' ': 12,
+    # Also, remove the solved cube from the dataset
 }
 
 def load_cubes_dataset_as_tensor(batch_no, limit_batches = 1, filename = 'cubes_map.bin'):

@@ -32,14 +32,12 @@ void read_cubes_map(CubesMap& result, const char* filename, size_t from_offset =
 	printf("Reading cubes map... (%.1f%%)\r", read_file_total*1.0 / file_size * 100.0);
 
         // Read all cube entries in the buffer
-        while (read_bytes - cursor >= 25) {
-            // Read the cube faces, as 6 uint32_t (see cube.h)
-            uint32_t faces[6] = {0};
+        while (read_bytes - cursor >= 13) {
+            // Read the cube faces, as 6 uint16_t (see cube.h)
+            uint16_t faces[6] = {0};
             for (int i = 0; i < 6; i++) {
-                faces[i] = static_cast<uint32_t>(static_cast<unsigned char>(buffer[cursor++]));
-                faces[i] |= static_cast<uint32_t>(static_cast<unsigned char>(buffer[cursor++]) << 8);
-                faces[i] |= static_cast<uint32_t>(static_cast<unsigned char>(buffer[cursor++]) << 16);
-                faces[i] |= static_cast<uint32_t>(static_cast<unsigned char>(buffer[cursor++]) << 24);
+                faces[i] = static_cast<uint16_t>(static_cast<unsigned char>(buffer[cursor++]));
+                faces[i] |= static_cast<uint16_t>(static_cast<unsigned char>(buffer[cursor++]) << 8);
             }
 
             // Read the move (char)
@@ -72,7 +70,7 @@ extern "C" char get_cube_from_map(const CubesMap* result, const T_CUBE cube) {
     // but we need to set them to 0, otherwise the
     // hash will be different.
     for (int i = 0; i < 6; i++) {
-        std_cube[i] = cube[i] & 0x7ffffff; // Lower 27 bits
+        std_cube[i] = cube[i] & 0xfff; // Lower 12 bits
     }
 
     auto it = result->find(std_cube);

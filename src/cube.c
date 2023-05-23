@@ -26,9 +26,9 @@ T_CUBE create_cube_from(uint8_t* flatten_faces) {
 
     // Copy the faces into the cube
     for (uint8_t face = 0; face < 6; face++) {
-        for (uint8_t row = 0; row < 3; row++) {
-            for (uint8_t col = 0; col < 3; col++) {
-                uint8_t i = face*9 + row*3 + col;
+        for (uint8_t row = 0; row < 2; row++) {
+            for (uint8_t col = 0; col < 2; col++) {
+                uint8_t i = face * 4 + row * 2 + col;
                 SET_CUBE(cube[face], row, col, flatten_faces[i]);
             }
         }
@@ -39,8 +39,8 @@ T_CUBE create_cube_from(uint8_t* flatten_faces) {
 
 void reset_cube(T_CUBE cube) {
     for (T_CUBE_CELL face = 0; face < 6; face++) {
-        for (T_CUBE_CELL row = 0; row < 3; row++) {
-            for (T_CUBE_CELL col = 0; col < 3; col++) {
+        for (T_CUBE_CELL row = 0; row < 2; row++) {
+            for (T_CUBE_CELL col = 0; col < 2; col++) {
                 SET_CUBE(cube[face], row, col, face);
             }
         }
@@ -66,8 +66,8 @@ void perform_action_short(T_CUBE cube, char action) {
 
 void rotate_clock(T_CUBE cube, uint8_t face) {
     // Step 1: Transpose the matrix
-    for (uint8_t i = 0; i < 3; i++) {
-        for (uint8_t j = i + 1; j < 3; j++) {
+    for (uint8_t i = 0; i < 2; i++) {
+        for (uint8_t j = i + 1; j < 2; j++) {
             T_CUBE_CELL temp = GET_CUBE(cube[face], i, j);
             SET_CUBE(cube[face], i, j, GET_CUBE(cube[face], j, i));
             SET_CUBE(cube[face], j, i, temp);
@@ -75,19 +75,19 @@ void rotate_clock(T_CUBE cube, uint8_t face) {
     }
 
     // Step 2: Reverse the rows of the transposed matrix
-    for (uint8_t i = 0; i < 3; i++) {
-        for (uint8_t j = 0; j < 2; j++) {
+    for (uint8_t i = 0; i < 2; i++) {
+        for (uint8_t j = 0; j < 1; j++) {
             T_CUBE_CELL temp = GET_CUBE(cube[face], i, j);
-            SET_CUBE(cube[face], i, j, GET_CUBE(cube[face], i, 2-j));
-            SET_CUBE(cube[face], i, 2-j, temp);
+            SET_CUBE(cube[face], i, j, GET_CUBE(cube[face], i, 1-j));
+            SET_CUBE(cube[face], i, 1-j, temp);
         }
     }
 }
 
 void rotate_counterclock(T_CUBE cube, uint8_t face) {
     // Step 1: Transpose the matrix
-    for (uint8_t i = 0; i < 3; i++) {
-        for (uint8_t j = i + 1; j < 3; j++) {
+    for (uint8_t i = 0; i < 2; i++) {
+        for (uint8_t j = i + 1; j < 2; j++) {
             T_CUBE_CELL temp = GET_CUBE(cube[face], i, j);
             SET_CUBE(cube[face], i, j, GET_CUBE(cube[face], j, i));
             SET_CUBE(cube[face], j, i, temp);
@@ -95,11 +95,11 @@ void rotate_counterclock(T_CUBE cube, uint8_t face) {
     }
 
     // Step 2: Reverse the columns of the transposed matrix
-    for (uint8_t i = 0; i < 3; i++) {
-        for (uint8_t j = 0; j < 2; j++) {
+    for (uint8_t i = 0; i < 2; i++) {
+        for (uint8_t j = 0; j < 1; j++) {
             T_CUBE_CELL temp = GET_CUBE(cube[face], j, i);
-            SET_CUBE(cube[face], j, i, GET_CUBE(cube[face], 2-j, i));
-            SET_CUBE(cube[face], 2-j, i, temp);
+            SET_CUBE(cube[face], j, i, GET_CUBE(cube[face], 1-j, i));
+            SET_CUBE(cube[face], 1-j, i, temp);
         }
     }
 }
@@ -113,16 +113,15 @@ void face0_clock(T_CUBE cube) {
     //      B = bottom row, T = top row, L = left column, R = right column.
     // Note: index order is (row, column)
     
-    // 0 -> 1b,3l,4t,2r
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
-        SET_CUBE(cube[1], 2, i, GET_CUBE(old[2], 2-i, 2));
-        SET_CUBE(cube[3], i, 0, GET_CUBE(old[1], 2, i));
-        SET_CUBE(cube[4], 0, i, GET_CUBE(old[3], 2-i, 0));
-        SET_CUBE(cube[2], i, 2, GET_CUBE(old[4], 0, i));
+        SET_CUBE(cube[1], 1, i, GET_CUBE(old[2], 1-i, 1));
+        SET_CUBE(cube[3], i, 0, GET_CUBE(old[1], 1, i));
+        SET_CUBE(cube[4], 0, i, GET_CUBE(old[3], 1-i, 0));
+        SET_CUBE(cube[2], i, 1, GET_CUBE(old[4], 0, i));
     }
 }
 
@@ -139,12 +138,12 @@ void face0_counterclock(T_CUBE cube) {
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
-        SET_CUBE(cube[1], 2, i, GET_CUBE(old[3], i, 0));
-        SET_CUBE(cube[3], i, 0, GET_CUBE(old[4], 0, 2-i));
-        SET_CUBE(cube[4], 0, i, GET_CUBE(old[2], i, 2));
-        SET_CUBE(cube[2], i, 2, GET_CUBE(old[1], 2, 2-i));
+        SET_CUBE(cube[1], 1, i, GET_CUBE(old[3], i, 0));
+        SET_CUBE(cube[3], i, 0, GET_CUBE(old[4], 0, 1-i));
+        SET_CUBE(cube[4], 0, i, GET_CUBE(old[2], i, 1));
+        SET_CUBE(cube[2], i, 1, GET_CUBE(old[1], 1, 1-i));
     }
 }
 
@@ -156,7 +155,7 @@ void face1_clock(T_CUBE cube) {
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
         SET_CUBE(cube[0], 0, i, GET_CUBE(old[3], 0, i));
         SET_CUBE(cube[2], 0, i, GET_CUBE(old[0], 0, i));
@@ -173,7 +172,7 @@ void face1_counterclock(T_CUBE cube) {
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
         SET_CUBE(cube[0], 0, i, GET_CUBE(old[2], 0, i));
         SET_CUBE(cube[2], 0, i, GET_CUBE(old[5], 0, i));
@@ -190,12 +189,12 @@ void face2_clock(T_CUBE cube) {
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
         SET_CUBE(cube[0], i, 0, GET_CUBE(old[1], i, 0));
         SET_CUBE(cube[4], i, 0, GET_CUBE(old[0], i, 0));
-        SET_CUBE(cube[5], i, 2, GET_CUBE(old[4], 2-i, 0));
-        SET_CUBE(cube[1], i, 0, GET_CUBE(old[5], 2-i, 2));
+        SET_CUBE(cube[5], i, 1, GET_CUBE(old[4], 1-i, 0));
+        SET_CUBE(cube[1], i, 0, GET_CUBE(old[5], 1-i, 1));
     }
 }
 
@@ -207,11 +206,11 @@ void face2_counterclock(T_CUBE cube) {
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
         SET_CUBE(cube[0], i, 0, GET_CUBE(old[4], i, 0));
-        SET_CUBE(cube[4], i, 0, GET_CUBE(old[5], 2-i, 2));
-        SET_CUBE(cube[5], i, 2, GET_CUBE(old[1], 2-i, 0));
+        SET_CUBE(cube[4], i, 0, GET_CUBE(old[5], 1-i, 1));
+        SET_CUBE(cube[5], i, 1, GET_CUBE(old[1], 1-i, 0));
         SET_CUBE(cube[1], i, 0, GET_CUBE(old[0], i, 0));
     }
 }
@@ -224,12 +223,12 @@ void face3_clock(T_CUBE cube) {
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
-        SET_CUBE(cube[0], i, 2, GET_CUBE(old[4], i, 2));
-        SET_CUBE(cube[1], i, 2, GET_CUBE(old[0], i, 2));
-        SET_CUBE(cube[5], i, 0, GET_CUBE(old[1], 2-i, 2));
-        SET_CUBE(cube[4], i, 2, GET_CUBE(old[5], 2-i, 0));
+        SET_CUBE(cube[0], i, 1, GET_CUBE(old[4], i, 1));
+        SET_CUBE(cube[1], i, 1, GET_CUBE(old[0], i, 1));
+        SET_CUBE(cube[5], i, 0, GET_CUBE(old[1], 1-i, 1));
+        SET_CUBE(cube[4], i, 1, GET_CUBE(old[5], 1-i, 0));
     }
 }
 
@@ -241,12 +240,12 @@ void face3_counterclock(T_CUBE cube) {
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
-        SET_CUBE(cube[0], i, 2, GET_CUBE(old[1], i, 2));
-        SET_CUBE(cube[1], i, 2, GET_CUBE(old[5], 2-i, 0));
-        SET_CUBE(cube[5], i, 0, GET_CUBE(old[4], 2-i, 2));
-        SET_CUBE(cube[4], i, 2, GET_CUBE(old[0], i, 2));
+        SET_CUBE(cube[0], i, 1, GET_CUBE(old[1], i, 1));
+        SET_CUBE(cube[1], i, 1, GET_CUBE(old[5], 1-i, 0));
+        SET_CUBE(cube[5], i, 0, GET_CUBE(old[4], 1-i, 1));
+        SET_CUBE(cube[4], i, 1, GET_CUBE(old[0], i, 1));
     }
 }
 
@@ -258,12 +257,12 @@ void face4_clock(T_CUBE cube) {
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
-        SET_CUBE(cube[0], 2, i, GET_CUBE(old[2], 2, i));
-        SET_CUBE(cube[3], 2, i, GET_CUBE(old[0], 2, i));
-        SET_CUBE(cube[5], 2, i, GET_CUBE(old[3], 2, i));
-        SET_CUBE(cube[2], 2, i, GET_CUBE(old[5], 2, i));
+        SET_CUBE(cube[0], 1, i, GET_CUBE(old[2], 1, i));
+        SET_CUBE(cube[3], 1, i, GET_CUBE(old[0], 1, i));
+        SET_CUBE(cube[5], 1, i, GET_CUBE(old[3], 1, i));
+        SET_CUBE(cube[2], 1, i, GET_CUBE(old[5], 1, i));
     }
 }
 
@@ -275,12 +274,12 @@ void face4_counterclock(T_CUBE cube) {
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
-        SET_CUBE(cube[0], 2, i, GET_CUBE(old[3], 2, i));
-        SET_CUBE(cube[3], 2, i, GET_CUBE(old[5], 2, i));
-        SET_CUBE(cube[5], 2, i, GET_CUBE(old[2], 2, i));
-        SET_CUBE(cube[2], 2, i, GET_CUBE(old[0], 2, i));
+        SET_CUBE(cube[0], 1, i, GET_CUBE(old[3], 1, i));
+        SET_CUBE(cube[3], 1, i, GET_CUBE(old[5], 1, i));
+        SET_CUBE(cube[5], 1, i, GET_CUBE(old[2], 1, i));
+        SET_CUBE(cube[2], 1, i, GET_CUBE(old[0], 1, i));
     }
 }
 
@@ -292,12 +291,12 @@ void face5_clock(T_CUBE cube) {
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
-        SET_CUBE(cube[1], 0, i, GET_CUBE(old[3], i, 2));
-        SET_CUBE(cube[2], i, 0, GET_CUBE(old[1], 0, 2-i));
-        SET_CUBE(cube[4], 2, i, GET_CUBE(old[2], i, 0));
-        SET_CUBE(cube[3], i, 2, GET_CUBE(old[4], 2, 2-i));
+        SET_CUBE(cube[1], 0, i, GET_CUBE(old[3], i, 1));
+        SET_CUBE(cube[2], i, 0, GET_CUBE(old[1], 0, 1-i));
+        SET_CUBE(cube[4], 1, i, GET_CUBE(old[2], i, 0));
+        SET_CUBE(cube[3], i, 1, GET_CUBE(old[4], 1, 1-i));
     }
 }
 
@@ -309,12 +308,12 @@ void face5_counterclock(T_CUBE cube) {
     T_CUBE_FACE old[6];
     memcpy(old, cube, sizeof(old));
 
-    for (T_CUBE_CELL i = 0; i < 3; i++) {
+    for (T_CUBE_CELL i = 0; i < 2; i++) {
         // Perform swaps!
-        SET_CUBE(cube[4], 2, i, GET_CUBE(old[3], 2-i, 2));
-        SET_CUBE(cube[2], i, 0, GET_CUBE(old[4], 2, i));
-        SET_CUBE(cube[1], 0, i, GET_CUBE(old[2], 2-i, 0));
-        SET_CUBE(cube[3], i, 2, GET_CUBE(old[1], 0, i));
+        SET_CUBE(cube[4], 1, i, GET_CUBE(old[3], 1-i, 1));
+        SET_CUBE(cube[2], i, 0, GET_CUBE(old[4], 1, i));
+        SET_CUBE(cube[1], 0, i, GET_CUBE(old[2], 1-i, 0));
+        SET_CUBE(cube[3], i, 1, GET_CUBE(old[1], 0, i));
     }
 }
 
@@ -357,15 +356,15 @@ uint8_t* _solved_faces(T_CUBE cube) {
     uint8_t* solved = (uint8_t*) malloc(6 * sizeof(uint8_t));
 
     for (uint8_t face = 0; face < 6; face++) {
-        T_CUBE_CELL center = GET_CUBE(cube[face], 1, 1);
+        T_CUBE_CELL center = face;
 
         solved[face] = 0;
 
-        for (uint8_t row = 0; row < 3; row++) {
-            for (uint8_t col = 0; col < 3; col++) {
+        for (uint8_t row = 0; row < 2; row++) {
+            for (uint8_t col = 0; col < 2; col++) {
 
                 //* Count solved faces, excluding the center.
-                if ((row != 1 || col != 1) && GET_CUBE(cube[face], row, col) == center) {
+                if (GET_CUBE(cube[face], row, col) == center) {
                     solved[face]++;
                 }
 
@@ -382,7 +381,7 @@ uint8_t solved_faces(T_CUBE cube) {
     uint8_t total = 0;
 
     for (uint8_t face = 0; face < 6; face++) {
-        if (solved[face] == 8) {
+        if (solved[face] == 4) {
             total++;
         }
     }
@@ -401,12 +400,12 @@ double solution_percentage(T_CUBE cube) {
     double total = 0;
 
     for (uint8_t face = 0; face < 6; face++) {
-        total += solved[face] - 1; // Exclude the center, since it's always solved.
+        total += solved[face];
     }
 
     free(solved);
 
-    return total / (6 /*faces*/ * 8 /*cells*/);
+    return total / (6 /*faces*/ * 4 /*cells*/);
 }
 
 T_CUBE_CELL get_cell(T_CUBE cube, uint8_t face, uint8_t row, uint8_t col) {

@@ -9,7 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import cubes_dataset
 
-cells_per_face = 9
+cells_per_face = 2*2
 faces_per_cube = 6
 possible_moves = len(cubes_dataset.CUBE_MOVES_ENCODING)
 
@@ -17,12 +17,12 @@ possible_moves = len(cubes_dataset.CUBE_MOVES_ENCODING)
 class CubeModel(nn.Module):
     def __init__(self):
         super().__init__()
-        hidden_layer_size = faces_per_cube * 13 * 2
+        hidden_layer_size = cells_per_face * faces_per_cube * 12
 
         hidden_layers = [
             nn.Linear(hidden_layer_size, hidden_layer_size),
             nn.Sigmoid(),
-        ] * 13
+        ] * 6
 
         self.mlp = nn.Sequential(
             nn.Linear(cells_per_face * faces_per_cube, hidden_layer_size),

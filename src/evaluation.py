@@ -33,10 +33,10 @@ if __name__ == '__main__':
         if known_cubes[cube] is None:
             total_cubes += 1
             prediction = model(cube.to_tensor().to(PYTORCH_DEVICE))
-            y = nn.Softmax(dim=1)(prediction).argmax(1)
+            y = nn.Softmax(dim=1)(prediction).argmax(1).item()
             if y == CUBE_MOVES_ENCODING[next_move]:
                 correct_cubes += 1
             else:
                 print(y, end=' ')
     
-    print(f'Accuracy: {correct_cubes / total_cubes * 100:.4f}%')
+    print(f'Accuracy: {correct_cubes / total_cubes * 100:.4f}% (= {correct_cubes} / {total_cubes})')

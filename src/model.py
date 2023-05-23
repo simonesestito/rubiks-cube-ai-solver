@@ -7,10 +7,11 @@ Will it be able to solve cubes that are not in the database?
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import cubes_dataset
 
 cells_per_face = 9
 faces_per_cube = 6
-possible_moves = 12
+possible_moves = len(cubes_dataset.CUBE_MOVES_ENCODING)
 
 # create the model
 class CubeModel(nn.Module):

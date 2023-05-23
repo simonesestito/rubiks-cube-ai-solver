@@ -34,7 +34,7 @@ def train_loop(model, loss_fn, optimizer):
         batch += BATCH_SIZE
 
         # Move tensors to the configured device
-        X = X.to(torch.float32).to(PYTORCH_DEVICE)
+        X = X.to(PYTORCH_DEVICE)
         # Compute prediction and loss
         pred = model(X)
         y = y.to(PYTORCH_DEVICE)

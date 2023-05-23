@@ -14,7 +14,7 @@ struct CubeSample {
  * Read cubes LIST from a file on disk.
  * Follow the same binary format as save_cube_to_file.
  */
-extern "C" void read_cubes_list(CubeSample* samples, const char* filename, const int batch_no, int limit_batches) {
+extern "C" size_t read_cubes_list(CubeSample* samples, const char* filename, const int batch_no, int limit_batches) {
     std::ifstream stream(filename, std::ios::binary | std::ios::in);
 
     // Read 64K block at a time
@@ -24,7 +24,7 @@ extern "C" void read_cubes_list(CubeSample* samples, const char* filename, const
     std::size_t read_bytes = static_cast<std::size_t>(stream.gcount());
 
     std::size_t read_file_total = 0;
-    unsigned int samples_i = 0;
+    size_t samples_i = 0;
 
     while (read_bytes > 0 && limit_batches-- > 0) {
         // Parse current read buffer
@@ -62,7 +62,7 @@ extern "C" void read_cubes_list(CubeSample* samples, const char* filename, const
         read_bytes = static_cast<std::size_t>(stream.gcount());
     }
 
-    std::cout << "samples_i: " << samples_i << std::endl;
-
     stream.close();
+
+    return samples_i;
 }

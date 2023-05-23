@@ -13,8 +13,13 @@ model = CubeModel().to(PYTORCH_DEVICE)
 
 # Hyper-parameters
 LEARNING_RATE = 0.001
-BATCH_SIZE = 250
+BATCH_SIZE = 2000
 EPOCHS = 3
+
+print('[pytorch] Using hyper-parameters:')
+print('[pytorch] LEARNING_RATE:', LEARNING_RATE)
+print('[pytorch] BATCH_SIZE:', BATCH_SIZE)
+print('[pytorch] EPOCHS:', EPOCHS)
 
 # Loss and optimizer
 criterion = nn.CrossEntropyLoss()

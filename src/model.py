@@ -18,11 +18,13 @@ class CubeModel(nn.Module):
     def __init__(self):
         super().__init__()
         self.mlp = nn.Sequential(
-            nn.Linear(cells_per_face * faces_per_cube, 64),
+            nn.Linear(cells_per_face * faces_per_cube, cells_per_face * faces_per_cube * 13),
             nn.Sigmoid(),
-            nn.Linear(64, 64),
+            nn.Linear(cells_per_face * faces_per_cube * 13, cells_per_face * faces_per_cube * 13),
             nn.Sigmoid(),
-            nn.Linear(64, possible_moves),
+            nn.Linear(cells_per_face * faces_per_cube * 13, cells_per_face * faces_per_cube),
+            nn.Sigmoid(),
+            nn.Linear(cells_per_face * faces_per_cube, possible_moves),
         )
         self.flatten = nn.Flatten()
 

@@ -21,7 +21,7 @@ model = model.to(PYTORCH_DEVICE)
 # Hyper-parameters
 LEARNING_RATE = 0.001
 BATCH_SIZE = 2000
-EPOCHS = 5
+EPOCHS = 10
 
 print('[pytorch] Using hyper-parameters:')
 print('[pytorch] LEARNING_RATE:', LEARNING_RATE)
@@ -30,7 +30,7 @@ print('[pytorch] EPOCHS:', EPOCHS)
 
 # Loss and optimizer
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)
 
 # Train the model
 def train_loop(model, loss_fn, optimizer):

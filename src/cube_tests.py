@@ -4,11 +4,14 @@ import os
 from cube import Cube
 from cubes_map import CubesMap
 from main import load_cube_faces
+import cubes_dataset
 
 RANDOM_TEST_REPS = 1000
 
 moves = [ "U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'"]
 assert len(moves) == 12
+
+cubes_map = CubesMap()
 
 '''
 Return 2 cubes so that we can work on one and compare it to the other.
@@ -43,12 +46,11 @@ def _test_four_moves(move):
         assert cube == original, move
 
 def test_cubes_map():
-    cubes_map = CubesMap()
-
     for _ in range(RANDOM_TEST_REPS):
-        cube, _ = randomize_cube(n_moves=7)
+        n_moves = 8
+        cube, _ = randomize_cube(n_moves=n_moves)
 
-        for _ in range(7):
+        for _ in range(n_moves):
             next_move = cubes_map[cube]
             assert next_move is not None
             cube.perform_action(next_move)
@@ -56,6 +58,21 @@ def test_cubes_map():
                 break
     
         assert cube.is_solved()
+
+def test_cubes_list():
+    for i in range(10):
+        # Load some batches
+        X, y = cubes_dataset.load_cubes_dataset(i*100, limit_batches=50)
+        assert len(X) == len(y)
+
+        for _ in range(100):
+            # Choose a random cube
+            j = random.randint(0, len(X) - 1)
+            x, yy = X[j], y[j].decode('ascii')
+            c = Cube(x)
+            # Check if the move to make is the same as in the map
+            assert cubes_map[c] == yy, f'Map {cubes_map[c]} - list {yy}\n'+str(c)
+
 
 def _test_cube(cube_faces, moves):
   cube = Cube(cube_faces)

@@ -37,6 +37,8 @@ def train_loop(model, loss_fn, optimizer):
     batch = 0
     X, y = cubes_dataset.load_cubes_dataset_as_tensor(batch, BATCH_SIZE)
 
+    total_samples, correct_samples = 0, 0
+
     while len(X) > 0:
         batch += BATCH_SIZE
 
@@ -52,9 +54,15 @@ def train_loop(model, loss_fn, optimizer):
         loss.backward()
         optimizer.step()
 
+        # Compute accuracy
+        _, predicted = torch.max(pred.data, 1)
+        total_samples += y.size(0)
+        correct_samples += (predicted == y).sum().item()
+
         if batch % 1000 == 0 or BATCH_SIZE > 1000:
             loss = loss.item()
-            print(f"loss: {loss:>7f}  [batch={batch}]")
+            print(f"loss: {loss:>7f}  [batch={batch}] - Batch accuracy: {correct_samples/total_samples*100:.4f}% ({correct_samples}/{total_samples})")
+            total_samples, correct_samples = 0, 0
         
         # Load next batch
         X, y = cubes_dataset.load_cubes_dataset_as_tensor(batch, BATCH_SIZE)

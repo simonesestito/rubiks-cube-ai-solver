@@ -20,7 +20,7 @@ model = model.to(PYTORCH_DEVICE)
 
 # Hyper-parameters
 LEARNING_RATE = 0.001
-BATCH_SIZE = 2000
+BATCH_SIZE = 1000
 EPOCHS = 10
 
 print('[pytorch] Using hyper-parameters:')

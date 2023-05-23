@@ -87,7 +87,6 @@ void create_cubes_map(CubesMap& result) {
     // Insert the basic cube
     result.try_emplace(std_cube, '\0');
     previous_stage->try_emplace(std_cube, '\0');
-    std::cout << "Stage 0: 1 new cube" << std::endl;
 
     // For each stage, add all the possible moves
     // to the previous stage new cubes.
@@ -122,6 +121,14 @@ void create_cubes_map(CubesMap& result) {
         previous_stage = current_stage;
     }
     delete previous_stage;
+
+    // Finally, remove the solved cube from the map (dataset)
+    {
+        T_CUBE cube = create_cube();
+        std::copy(cube, cube+6, std_cube.begin());
+        free(cube);
+    }
+    result.erase(std_cube);
 }
 
 int main() {

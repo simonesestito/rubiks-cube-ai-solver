@@ -27,7 +27,7 @@ _lib.read_cubes_list.argtypes = [
 
 def load_cubes_dataset(batch_no, limit_batches = 1, filename = 'cubes_map.bin'):
     # Allocate cube samples
-    cube_samples = np.empty(2621 * limit_batches, dtype=CubeSample)
+    cube_samples = np.empty(5041 * limit_batches, dtype=CubeSample)
     cubes_no = _lib.read_cubes_list(
         ctypes.cast(cube_samples.ctypes.data, ctypes.POINTER(CubeSample)),
         ctypes.c_char_p(filename.encode('ascii')),

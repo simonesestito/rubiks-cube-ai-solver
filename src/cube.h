@@ -15,10 +15,10 @@
  */
 
 #define GET_CUBE(face, row, col) \
-    (((face) >> 3*((row)*3+(col))) & 0b111)
+    (((face) >> 3*((row)*2+(col))) & 0b111)
 
 #define SET_CUBE(face, row, col, v) \
-    (face) = ((v)&0b111) << 3*((row)*3+(col)) | ((face) & (0xFFFFFFFF ^ (0b111 << 3*((row)*3+(col)))))
+    (face) = ((v)&0b111) << 3*((row)*2+(col)) | ((face) & (0xFFFFFFFF ^ (0b111 << 3*((row)*2+(col)))))
 
 #define T_CUBE_FACE uint16_t
 #define T_CUBE T_CUBE_FACE*
@@ -40,5 +40,6 @@ void face4_counterclock(T_CUBE cube);
 void face5_clock(T_CUBE cube);
 void face5_counterclock(T_CUBE cube);
 
+int is_solved(T_CUBE cube);
 
 #endif // CUBE_H

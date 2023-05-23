@@ -55,6 +55,9 @@ extern "C" size_t read_cubes_list(CubeSample *samples, const char *filename, con
                 {
                     for (int col = 0; col < 2; col++)
                     {
+                        std::cout << "Faces: " << face << " " << row << " " << col << std::endl;
+                        std::cout << "Cube: " << cube[face] << std::endl;
+                        std::cout << "Samples: " << samples_i << std::endl;
                         samples[samples_i].cube[face][row][col] = GET_CUBE(cube[face], row, col);
                     }
                 }
@@ -71,4 +74,14 @@ extern "C" size_t read_cubes_list(CubeSample *samples, const char *filename, con
     stream.close();
 
     return samples_i;
+}
+
+int main() {
+    std::cout << "Cubes dataset" << std::endl;
+
+    // Read cubes from file
+    CubeSample samples[5041];
+    size_t samples_count = read_cubes_list(samples, "cubes_map.bin", 0, 1);
+
+    return 0;
 }

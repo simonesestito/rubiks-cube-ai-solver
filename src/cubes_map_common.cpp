@@ -47,7 +47,7 @@ void solve_cubes_map(const CubesMap& cubesMap) {
         char move = it.second;
 
         // Until the cube is solved
-        while (move != '\0') {
+        while (is_solved(std_cube.data()) == 0) {
             // Apply the reversed move
             char reverse = get_reverse_move(move);
             perform_action_short(std_cube.data(), reverse);

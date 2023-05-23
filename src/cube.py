@@ -137,26 +137,26 @@ class Cube:
     cube_image = ''
 
     # First row = face 1
-    for row in range(3):
-      cube_image += ' ' * 7
-      for col in range(3):
+    for row in range(2):
+      cube_image += ' ' * 5
+      for col in range(2):
         cube_image += self._print_cell(1, row, col)
       cube_image += '\n'
     cube_image += '\n'
     
     # Second row = faces 2, 0, 3, 5
-    for row in range(3):
+    for row in range(2):
       for face in (2, 0, 3, 5):
-        for col in range(3):
+        for col in range(2):
           cube_image += self._print_cell(face, row, col)
         cube_image += ' '
       cube_image += '\n'
     cube_image += '\n'
 
     # Third row = face 4
-    for row in range(3):
-      cube_image += ' ' * 7
-      for col in range(3):
+    for row in range(2):
+      cube_image += ' ' * 5
+      for col in range(2):
         cube_image += self._print_cell(4, row, col)
       cube_image += '\n'
 
@@ -164,16 +164,16 @@ class Cube:
 
   def is_same(self, faces):
     for face in range(6):
-      for row in range(3):
-        for col in range(3):
+      for row in range(2):
+        for col in range(2):
           if self.get_cell(face, row, col) != faces[face][row][col]:
             return False
     return True
   
   def __eq__(self, other):
     for face in range(6):
-      for row in range(3):
-        for col in range(3):
+      for row in range(2):
+        for col in range(2):
           if self.get_cell(face, row, col) != other.get_cell(face, row, col):
             return False
     return True
@@ -182,6 +182,6 @@ class Cube:
     return torch.tensor([
       self.get_cell(face, row, col)
       for face in range(6)
-      for row in range(3)
-      for col in range(3)
+      for row in range(2)
+      for col in range(2)
     ]).unsqueeze(0).float()

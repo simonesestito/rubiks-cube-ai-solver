@@ -12,7 +12,7 @@ moves = [ "U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'"]
 assert len(moves) == 12
 
 if 'known_cubes' not in globals():
-    cubes_map = CubesMap()
+    cubes_map = None #CubesMap()
 
 '''
 Return 2 cubes so that we can work on one and compare it to the other.
@@ -63,7 +63,7 @@ def test_cubes_map():
 def test_cubes_list():
     for i in range(10):
         # Load some batches
-        X, y = cubes_dataset.load_cubes_dataset_as_cubes(i*100, limit_batches=50)
+        X, y = cubes_dataset.load_cubes_dataset_as_cubes(i, limit_batches=10)
         assert len(X) == len(y)
 
         for _ in range(100):

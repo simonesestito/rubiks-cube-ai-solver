@@ -65,43 +65,19 @@ void perform_action_short(T_CUBE cube, char action) {
 }
 
 void rotate_clock(T_CUBE cube, uint8_t face) {
-    // Step 1: Transpose the matrix
-    for (uint8_t i = 0; i < 2; i++) {
-        for (uint8_t j = i + 1; j < 2; j++) {
-            T_CUBE_CELL temp = GET_CUBE(cube[face], i, j);
-            SET_CUBE(cube[face], i, j, GET_CUBE(cube[face], j, i));
-            SET_CUBE(cube[face], j, i, temp);
-        }
-    }
-
-    // Step 2: Reverse the rows of the transposed matrix
-    for (uint8_t i = 0; i < 2; i++) {
-        for (uint8_t j = 0; j < 1; j++) {
-            T_CUBE_CELL temp = GET_CUBE(cube[face], i, j);
-            SET_CUBE(cube[face], i, j, GET_CUBE(cube[face], i, 1-j));
-            SET_CUBE(cube[face], i, 1-j, temp);
-        }
-    }
+    uint16_t temp = GET_CUBE(cube[face], 0, 0);
+    SET_CUBE(cube[face], 0, 0, GET_CUBE(cube[face], 1, 0));
+    SET_CUBE(cube[face], 1, 0, GET_CUBE(cube[face], 1, 1));
+    SET_CUBE(cube[face], 1, 1, GET_CUBE(cube[face], 0, 1));
+    SET_CUBE(cube[face], 0, 1, temp);
 }
 
 void rotate_counterclock(T_CUBE cube, uint8_t face) {
-    // Step 1: Transpose the matrix
-    for (uint8_t i = 0; i < 2; i++) {
-        for (uint8_t j = i + 1; j < 2; j++) {
-            T_CUBE_CELL temp = GET_CUBE(cube[face], i, j);
-            SET_CUBE(cube[face], i, j, GET_CUBE(cube[face], j, i));
-            SET_CUBE(cube[face], j, i, temp);
-        }
-    }
-
-    // Step 2: Reverse the columns of the transposed matrix
-    for (uint8_t i = 0; i < 2; i++) {
-        for (uint8_t j = 0; j < 1; j++) {
-            T_CUBE_CELL temp = GET_CUBE(cube[face], j, i);
-            SET_CUBE(cube[face], j, i, GET_CUBE(cube[face], 1-j, i));
-            SET_CUBE(cube[face], 1-j, i, temp);
-        }
-    }
+    uint16_t temp = GET_CUBE(cube[face], 0, 0);
+    SET_CUBE(cube[face], 0, 0, GET_CUBE(cube[face], 0, 1));
+    SET_CUBE(cube[face], 0, 1, GET_CUBE(cube[face], 1, 1));
+    SET_CUBE(cube[face], 1, 1, GET_CUBE(cube[face], 1, 0));
+    SET_CUBE(cube[face], 1, 0, temp);
 }
 
 void face0_clock(T_CUBE cube) {

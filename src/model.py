@@ -22,8 +22,6 @@ class CubeModel(nn.Module):
             nn.Sigmoid(),
             nn.Linear(cells_per_face * faces_per_cube * 13, cells_per_face * faces_per_cube * 13),
             nn.Sigmoid(),
-            nn.Linear(cells_per_face * faces_per_cube * 13, cells_per_face * faces_per_cube),
-            nn.Sigmoid(),
             nn.Linear(cells_per_face * faces_per_cube, possible_moves),
         )
         self.flatten = nn.Flatten()

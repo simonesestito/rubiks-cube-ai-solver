@@ -62,16 +62,15 @@ def test_cubes_map():
 def test_cubes_list():
     for i in range(10):
         # Load some batches
-        X, y = cubes_dataset.load_cubes_dataset(i*100, limit_batches=50)
+        X, y = cubes_dataset.load_cubes_dataset_as_cubes(i*100, limit_batches=50)
         assert len(X) == len(y)
 
         for _ in range(100):
             # Choose a random cube
             j = random.randint(0, len(X) - 1)
-            x, yy = X[j], y[j].decode('ascii')
-            c = Cube(x)
+            x, yy = X[j], y[j]
             # Check if the move to make is the same as in the map
-            assert cubes_map[c] == yy, f'Map {cubes_map[c]} - list {yy}\n'+str(c)
+            assert cubes_map[x] == yy, f'Map {cubes_map[x]} - list {yy}\n'+str(x)
 
 
 def _test_cube(cube_faces, moves):

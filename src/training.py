@@ -2,8 +2,10 @@ from model import CubeModel
 import torch
 import torch.nn as nn
 import cubes_dataset
+import os
 
-PYTORCH_DEVICE = 'cpu'
+PYTORCH_DEVICE = os.getenv('PYTORCH_DEVICE', 'cuda')
+print('[pytorch] Using device:', PYTORCH_DEVICE)
 
 assert torch.cuda.is_available(), 'CUDA is not available'
 

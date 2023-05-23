@@ -14,7 +14,7 @@ model = CubeModel().to(PYTORCH_DEVICE)
 # Hyper-parameters
 LEARNING_RATE = 0.001
 BATCH_SIZE = 2000
-EPOCHS = 3
+EPOCHS = 20
 
 print('[pytorch] Using hyper-parameters:')
 print('[pytorch] LEARNING_RATE:', LEARNING_RATE)
@@ -55,3 +55,6 @@ def train_loop(model, loss_fn, optimizer):
 for epoch in range(EPOCHS):
     print(f"Epoch {epoch+1}\n-------------------------------")
     train_loop(model, criterion, optimizer)
+
+# Save the model checkpoint
+torch.save(model, 'model.ckpt')

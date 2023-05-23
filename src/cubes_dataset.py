@@ -62,6 +62,7 @@ def load_cubes_dataset_as_tensor(batch_no, limit_batches = 1, filename = 'cubes_
     y = torch.tensor([
         CUBE_MOVES_ENCODING[move]
         for move in y
+        if move != ' ' # Ignore the space = cube is solved
     ])
 
     return X, y

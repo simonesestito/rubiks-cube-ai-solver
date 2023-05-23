@@ -7,6 +7,7 @@ with all previous stages to get to this point.
 
 import ctypes
 import os
+import torch
 
 # Load the shared library containing the C functions
 _lib = ctypes.CDLL(os.path.dirname(os.path.realpath(__file__)) + '/libcube.so')
@@ -176,3 +177,11 @@ class Cube:
           if self.get_cell(face, row, col) != other.get_cell(face, row, col):
             return False
     return True
+  
+  def to_tensor(self):
+    return torch.tensor([
+      self.get_cell(face, row, col)
+      for face in range(6)
+      for row in range(3)
+      for col in range(3)
+    ]).unsqueeze(0).float()

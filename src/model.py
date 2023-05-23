@@ -21,8 +21,6 @@ class CubeModel(nn.Module):
             nn.Sigmoid(),
             nn.Linear(64, 64),
             nn.Sigmoid(),
-            nn.Linear(64, 64),
-            nn.Sigmoid(),
             nn.Linear(64, possible_moves),
         )
         self.flatten = nn.Flatten()

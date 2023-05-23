@@ -13,7 +13,7 @@ model = CubeModel().to(PYTORCH_DEVICE)
 
 # Hyper-parameters
 LEARNING_RATE = 0.001
-BATCH_SIZE = 100
+BATCH_SIZE = 250
 EPOCHS = 3
 
 # Loss and optimizer
@@ -40,7 +40,7 @@ def train_loop(model, loss_fn, optimizer):
         loss.backward()
         optimizer.step()
 
-        if batch % 1000 == 0:
+        if batch % 1000 == 0 or BATCH_SIZE > 1000:
             loss = loss.item()
             print(f"loss: {loss:>7f}  [batch={batch}]")
         

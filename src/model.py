@@ -28,5 +28,5 @@ class CubeModel(nn.Module):
         self.flatten = nn.Flatten()
 
     def forward(self, x):
-        x = self.flatten(x) # Flat the cube
+        x = self.flatten(x)
         return self.mlp(x)

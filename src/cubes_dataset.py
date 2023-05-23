@@ -37,14 +37,32 @@ def load_cubes_dataset(batch_no, limit_batches = 1, filename = 'cubes_map.bin'):
 
     return cube_samples['cube'], np.char.decode(cube_samples['move'], 'ascii')
 
+CUBE_MOVES_ENCODING = {
+    'U': 0,
+    'u': 1,
+    'D': 2,
+    'd': 3,
+    'L': 4,
+    'l': 5,
+    'R': 6,
+    'r': 7,
+    'F': 8,
+    'f': 9,
+    'B': 10,
+    'b': 11,
+}
+
 def load_cubes_dataset_as_tensor(batch_no, limit_batches = 1, filename = 'cubes_map.bin'):
     X, y = load_cubes_dataset(batch_no, limit_batches, filename)
 
     # Make X a tensor
-    X = torch.from_numpy(X.reshape())
+    X = torch.from_numpy(X)
 
-    # Flat the X
-    X = torch.flatten(X)
+    # Convert y to a tensor, using index-based encoding
+    y = torch.tensor([
+        CUBE_MOVES_ENCODING[move]
+        for move in y
+    ])
 
     return X, y
 

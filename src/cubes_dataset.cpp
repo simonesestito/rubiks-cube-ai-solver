@@ -61,7 +61,6 @@ extern "C" void read_cubes_list(CubeSample* samples, const char* filename, const
         stream.read(buffer, 65536);
         read_bytes = static_cast<std::size_t>(stream.gcount());
     }
-    std::cout << std::endl;
 
     stream.close();
 }

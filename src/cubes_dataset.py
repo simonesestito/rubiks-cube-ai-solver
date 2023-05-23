@@ -56,14 +56,26 @@ CUBE_MOVES_ENCODING = {
 def load_cubes_dataset_as_tensor(batch_no, limit_batches = 1, filename = 'cubes_map.bin'):
     X, y = load_cubes_dataset(batch_no, limit_batches, filename)
 
+    # Convert y to a tensor, using index-based encoding
+    try:
+        y = torch.tensor([
+            CUBE_MOVES_ENCODING[move]
+            for move in y
+        ])
+    except KeyError as e:
+        print('KeyError:', e)
+        print('y:', y)
+        for i, move in enumerate(y):
+            try:
+                CUBE_MOVES_ENCODING[move]
+            except KeyError as ee:
+                # Print the cube
+                print('Cube:')
+                print(Cube(X[i]))
+                raise e
+
     # Make X a tensor
     X = torch.from_numpy(X)
-
-    # Convert y to a tensor, using index-based encoding
-    y = torch.tensor([
-        CUBE_MOVES_ENCODING[move]
-        for move in y
-    ])
 
     return X, y
 

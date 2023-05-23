@@ -8,3 +8,4 @@ notebooks/*.c
 __pycache__/
 cubes_map.bin
 cubes_map.bin.bak
+model.ckpt

@@ -11,7 +11,8 @@ RANDOM_TEST_REPS = 1000
 moves = [ "U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'"]
 assert len(moves) == 12
 
-cubes_map = CubesMap()
+if 'known_cubes' not in globals():
+    cubes_map = CubesMap()
 
 '''
 Return 2 cubes so that we can work on one and compare it to the other.

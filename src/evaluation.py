@@ -39,4 +39,5 @@ if __name__ == '__main__':
             else:
                 print(y, end=' ')
     
+    print()
     print(f'Accuracy: {correct_cubes / total_cubes * 100:.4f}% (= {correct_cubes} / {total_cubes})')

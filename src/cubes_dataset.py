@@ -3,42 +3,49 @@ Rubik's Cube List Dataset of solved cubes.
 '''
 
 import ctypes
-from cube import Cube
 import os
-import numpy as np
 import torch
+import torch.utils.data
 
 CUBES_MAP_FILE = os.getenv('CUBES_MAP_FILE', 'cubes_map.bin')
 
 class CubeSample(ctypes.Structure):
     _fields_ = [
-        ("cube", ctypes.c_uint8 * 2 * 2 * 6),
+        ("cube", ctypes.c_uint8 * 2 * 2 * 6 * (8-1)),
         ("move", ctypes.c_char)
     ]
 
 # Load the shared library containing the C functions
 _lib = ctypes.CDLL(os.path.dirname(os.path.realpath(__file__)) + '/libcubes_dataset.so')
 
-_lib.read_cubes_list.restype = ctypes.c_size_t
-_lib.read_cubes_list.argtypes = [
-    ctypes.POINTER(CubeSample), # cube_samples
+_lib.read_cube.restype = ctypes.c_int
+_lib.read_cube.argtypes = [
+    ctypes.POINTER(CubeSample), # cube_sample
     ctypes.c_char_p,            # filename
-    ctypes.c_int,               # batch_no
-    ctypes.c_int,               # limit_batches
+    ctypes.c_size_t,            # sample_no
 ]
 
-def load_cubes_dataset(batch_no, limit_batches = 1, filename = CUBES_MAP_FILE):
-    # Allocate cube samples
-    cube_samples = np.empty(5041 * limit_batches, dtype=CubeSample)
-    cubes_no = _lib.read_cubes_list(
-        ctypes.cast(cube_samples.ctypes.data, ctypes.POINTER(CubeSample)),
-        ctypes.c_char_p(filename.encode('ascii')),
-        ctypes.c_int(batch_no),
-        ctypes.c_int(limit_batches),
-    )
-    cube_samples = cube_samples[:cubes_no]
+_lib.get_cubes_len.restype = ctypes.c_size_t
+_lib.get_cubes_len.argtypes = [
+    ctypes.c_char_p,            # filename
+]
 
-    return cube_samples['cube'], np.char.decode(cube_samples['move'], 'ascii')
+class CubesDataloader(torch.utils.data.Dataset):
+    def __init__(self, filename = CUBES_MAP_FILE):
+        self.filename = filename
+    
+    def __len__(self):
+        total_len = _lib.get_cubes_len(ctypes.c_char_p(self.filename.encode('ascii')))
+        print('[pytorch] Dataset length:', total_len)
+        return total_len
+    
+    def __getitem__(self, idx):
+        cube_sample = CubeSample()
+        success = _lib.read_cube(ctypes.byref(cube_sample), ctypes.c_char_p(self.filename.encode('ascii')), ctypes.c_size_t(idx))
+        if not success:
+            return None
+        cubes_arr = cube_sample.cube
+        return torch.reshape(torch.Tensor(cubes_arr), (7,24)), CUBE_MOVES_ENCODING[cube_sample.move.decode('ascii')]
 
 CUBE_MOVES_ENCODING = {
     'U': 0,
@@ -55,28 +62,3 @@ CUBE_MOVES_ENCODING = {
     'b': 11,
     # Also, remove the solved cube from the dataset
 }
-
-def load_cubes_dataset_as_tensor(batch_no, limit_batches = 1, filename = CUBES_MAP_FILE):
-    X, y = load_cubes_dataset(batch_no, limit_batches, filename)
-
-    # Make X a tensor
-    X = torch.from_numpy(X).to(torch.float32)
-
-    # Convert y to a tensor, using index-based encoding
-    y = torch.tensor([
-        CUBE_MOVES_ENCODING[move]
-        for move in y
-    ])
-
-    return X, y
-
-def load_cubes_dataset_as_cubes(batch_no, limit_batches = 1, filename = CUBES_MAP_FILE):
-    X, y = load_cubes_dataset(batch_no, limit_batches, filename)
-
-    # Make every X a cube
-    X = [
-        Cube(x)
-        for x in X
-    ]
-
-    return X, y

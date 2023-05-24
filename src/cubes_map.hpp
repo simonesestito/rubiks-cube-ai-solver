@@ -15,7 +15,8 @@ typedef std::unordered_map<StdCube, char, CubeHasher> CubesMap;
 // Constant array of all possible moves
 static const char CUBE_MOVES[12] = { 'f', 'F', 'u', 'U', 'b', 'B', 'l', 'L', 'r', 'R', 'd', 'D' };
 
-static const unsigned char MAX_MOVES_STAGES = 10;
+static const unsigned char MAX_MOVES_STAGES = 8;
+static const unsigned char MINUS_MOVES = 1;
 static const char* MAP_FILENAME = "cubes_map.bin";
 
 /**

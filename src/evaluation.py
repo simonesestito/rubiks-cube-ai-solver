@@ -21,6 +21,7 @@ def randomize_cube(n_moves = 8):
     return cube
 
 if __name__ == '__main__':
+    model.eval() #! Disable training mode
     total_cubes = 0
     correct_cubes = 0
 

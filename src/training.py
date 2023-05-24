@@ -33,17 +33,16 @@ print('[pytorch] EPOCHS:', EPOCHS)
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
+dataset = cubes_dataset.CubesDataloader()
+dataloader = torch.utils.data.DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
+
 # Train the model
 def train_loop(model, loss_fn, optimizer):
-    batch = 0
-    X, y = cubes_dataset.load_cubes_dataset_as_tensor(batch, BATCH_SIZE)
+    model.train()
 
-    total_samples, correct_samples = 0, 0
-
-    while len(X) > 0:
-        batch += BATCH_SIZE
-
+    for batch, (X, y) in enumerate(dataloader):
         # Move tensors to the configured device
+        print(X.shape)
         X = X.to(PYTORCH_DEVICE)
         # Compute prediction and loss
         pred = model(X)
@@ -60,7 +59,7 @@ def train_loop(model, loss_fn, optimizer):
         total_samples += y.size(0)
         correct_samples += (predicted == y).sum().item()
 
-        if batch % 1000 == 0 or BATCH_SIZE > 1000:
+        if batch % 10 == 0 or BATCH_SIZE > 1000:
             loss = loss.item()
             print(f"loss: {loss:>7f}  [batch={batch}] - Batch accuracy: {correct_samples/total_samples*100:.4f}% ({correct_samples}/{total_samples})")
             total_samples, correct_samples = 0, 0

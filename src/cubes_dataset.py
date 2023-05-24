@@ -8,6 +8,8 @@ import os
 import numpy as np
 import torch
 
+CUBES_MAP_FILE = os.getenv('CUBES_MAP_FILE', 'cubes_map.bin')
+
 class CubeSample(ctypes.Structure):
     _fields_ = [
         ("cube", ctypes.c_uint8 * 2 * 2 * 6),
@@ -25,7 +27,7 @@ _lib.read_cubes_list.argtypes = [
     ctypes.c_int,               # limit_batches
 ]
 
-def load_cubes_dataset(batch_no, limit_batches = 1, filename = 'cubes_map.bin'):
+def load_cubes_dataset(batch_no, limit_batches = 1, filename = CUBES_MAP_FILE):
     # Allocate cube samples
     cube_samples = np.empty(5041 * limit_batches, dtype=CubeSample)
     cubes_no = _lib.read_cubes_list(
@@ -54,7 +56,7 @@ CUBE_MOVES_ENCODING = {
     # Also, remove the solved cube from the dataset
 }
 
-def load_cubes_dataset_as_tensor(batch_no, limit_batches = 1, filename = 'cubes_map.bin'):
+def load_cubes_dataset_as_tensor(batch_no, limit_batches = 1, filename = CUBES_MAP_FILE):
     X, y = load_cubes_dataset(batch_no, limit_batches, filename)
 
     # Make X a tensor
@@ -68,7 +70,7 @@ def load_cubes_dataset_as_tensor(batch_no, limit_batches = 1, filename = 'cubes_
 
     return X, y
 
-def load_cubes_dataset_as_cubes(batch_no, limit_batches = 1, filename = 'cubes_map.bin'):
+def load_cubes_dataset_as_cubes(batch_no, limit_batches = 1, filename = CUBES_MAP_FILE):
     X, y = load_cubes_dataset(batch_no, limit_batches, filename)
 
     # Make every X a cube

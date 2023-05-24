@@ -31,5 +31,5 @@ class CubeModel(nn.Module):
         self.flatten = nn.Flatten()
 
     def forward(self, cubes_seq):
-        lstm_out, _ = self.lstm(cubes_seq)[-1]
-        return self.mlp(lstm_out)
+        _, (final_state, _) = self.lstm(cubes_seq)
+        return self.mlp(final_state[-1])

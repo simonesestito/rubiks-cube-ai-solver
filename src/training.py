@@ -38,16 +38,15 @@ dataloader = torch.utils.data.DataLoader(dataset, batch_size=BATCH_SIZE, shuffle
 
 # Train the model
 def train_loop(model, loss_fn, optimizer):
-    model.train()
+    model = model.train()
 
+    total_samples, correct_samples = 0, 0
     for batch, (X, y) in enumerate(dataloader):
         # Move tensors to the configured device
-        print(X.shape)
         X = X.to(PYTORCH_DEVICE)
         # Compute prediction and loss
         pred = model(X)
         y = y.to(PYTORCH_DEVICE)
-        print(pred.shape, y.shape)
         loss = loss_fn(pred, y)
 
         # Backpropagation
@@ -64,9 +63,6 @@ def train_loop(model, loss_fn, optimizer):
             loss = loss.item()
             print(f"loss: {loss:>7f}  [batch={batch}] - Batch accuracy: {correct_samples/total_samples*100:.4f}% ({correct_samples}/{total_samples})")
             total_samples, correct_samples = 0, 0
-        
-        # Load next batch
-        X, y = cubes_dataset.load_cubes_dataset_as_tensor(batch, BATCH_SIZE)
 
 if __name__ == '__main__':
     for epoch in range(EPOCHS):

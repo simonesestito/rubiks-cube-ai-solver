@@ -46,6 +46,26 @@ void solve_cubes_map(const CubesMap& cubesMap) {
         StdCube std_cube = it.first;
         char move = it.second;
 
+        if (is_solved(std_cube.data())) {
+            // If the cube is already solved, ERROR
+            std::cout << std::endl << "ERROR: Cube already solved" << std::endl;
+            // Print each number of the cube
+            std::cout << "Cube: ";
+            for (int i = 0; i < 6; i++) {
+                std::cout << (int) std_cube[i] << ' ';
+            }
+            std::cout << std::endl;
+
+            // Print each number of the default cube
+            T_CUBE cube = create_cube();
+            std::cout << "Default cube: ";
+            for (int i = 0; i < 6; i++) {
+                std::cout << (int) cube[i] << ' ';
+            }
+            std::cout << std::endl;
+            free(cube);
+        }
+
         // Until the cube is solved
         while (is_solved(std_cube.data()) == 0) {
             // Apply the reversed move

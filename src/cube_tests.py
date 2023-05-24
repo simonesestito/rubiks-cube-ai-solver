@@ -46,6 +46,17 @@ def _test_four_moves(move):
         
         assert cube == original, move
 
+def test_cubes_list_has_no_solved():
+    i = 0
+    X, y = cubes_dataset.load_cubes_dataset_as_cubes(i, limit_batches=10)
+    while len(X) > 0:
+        for x in X:
+            if x.is_solved():
+                print(x)
+            assert not x.is_solved()
+        i += 10
+        X, y = cubes_dataset.load_cubes_dataset_as_cubes(i, limit_batches=10)
+
 def test_cubes_map():
     for _ in range(RANDOM_TEST_REPS):
         n_moves = 7
@@ -73,6 +84,8 @@ def test_cubes_list():
             # Check if the move to make is the same as in the map
             assert cubes_map[x] == yy, f'Map {cubes_map[x]} - list {yy}\n'+str(x)
 
+def test_cube_solved_default():
+    assert Cube().is_solved()
 
 def _test_cube(cube_faces, moves):
   cube = Cube(cube_faces)

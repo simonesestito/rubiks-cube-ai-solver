@@ -18,7 +18,7 @@
     (((face) >> 3*((row)*2+(col))) & 0b111)
 
 #define SET_CUBE(face, row, col, v) \
-    (face) = ((v)&0b111) << 3*((row)*2+(col)) | ((face) & (0xFFFFFFFF ^ (0b111 << 3*((row)*2+(col)))))
+    (face) = ((v)&0b111) << 3*((row)*2+(col)) | ((face) & (0xFFFF ^ (0b111 << 3*((row)*2+(col)))))
 
 #define T_CUBE_FACE uint16_t
 #define T_CUBE T_CUBE_FACE*

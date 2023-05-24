@@ -333,7 +333,6 @@ uint8_t* _solved_faces(T_CUBE cube) {
 
     for (uint8_t face = 0; face < 6; face++) {
         T_CUBE_CELL center = face;
-
         solved[face] = 0;
 
         for (uint8_t row = 0; row < 2; row++) {
@@ -343,7 +342,6 @@ uint8_t* _solved_faces(T_CUBE cube) {
                 if (GET_CUBE(cube[face], row, col) == center) {
                     solved[face]++;
                 }
-
             }
         }
     }

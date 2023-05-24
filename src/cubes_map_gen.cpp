@@ -103,7 +103,7 @@ void create_cubes_map(CubesMap& result) {
                 perform_action_short(std_cube.data(), move);
 
                 // If the cube is not already in the map
-                if (result.find(std_cube) == result.end()) {
+                if (!is_solved(std_cube.data()) && result.find(std_cube) == result.end()) {
                     // Add it to the current stage
                     current_stage->try_emplace(std_cube, move);
                     // Add it to the full map

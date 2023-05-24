@@ -21,12 +21,12 @@ class CubeModel(nn.Module):
 
         hidden_layers = [
             nn.Linear(hidden_layer_size, hidden_layer_size),
-            nn.Sigmoid(),
+            nn.ReLU(),
         ] * 6
 
         self.mlp = nn.Sequential(
             nn.Linear(cells_per_face * faces_per_cube, hidden_layer_size),
-            nn.Sigmoid(),
+            nn.ReLU(),
             *hidden_layers,
             nn.Linear(hidden_layer_size, possible_moves),
         )

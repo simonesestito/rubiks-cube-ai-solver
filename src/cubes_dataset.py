@@ -9,9 +9,11 @@ import torch.utils.data
 
 CUBES_MAP_FILE = os.getenv('CUBES_MAP_FILE', 'cubes_map.bin')
 
+cubes_size = 8-4
+
 class CubeSample(ctypes.Structure):
     _fields_ = [
-        ("cube", ctypes.c_uint8 * 2 * 2 * 6 * (8-1)),
+        ("cube", ctypes.c_uint8 * 2 * 2 * 6 * cubes_size),
         ("move", ctypes.c_char)
     ]
 
@@ -45,7 +47,7 @@ class CubesDataloader(torch.utils.data.Dataset):
         if not success:
             return None
         cubes_arr = cube_sample.cube
-        return torch.reshape(torch.Tensor(cubes_arr), (7,24)), CUBE_MOVES_ENCODING[cube_sample.move.decode('ascii')]
+        return torch.reshape(torch.Tensor(cubes_arr), (cubes_size,24)), CUBE_MOVES_ENCODING[cube_sample.move.decode('ascii')]
 
 CUBE_MOVES_ENCODING = {
     'U': 0,

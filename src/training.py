@@ -21,7 +21,7 @@ print(model)
 
 # Hyper-parameters
 LEARNING_RATE = 0.01
-BATCH_SIZE = 500
+BATCH_SIZE = 3000
 EPOCHS = 10
 
 print('[pytorch] Using hyper-parameters:')
@@ -59,9 +59,9 @@ def train_loop(model, loss_fn, optimizer):
         total_samples += y.size(0)
         correct_samples += (predicted == y).sum().item()
 
-        if batch % 100 == 0 or BATCH_SIZE > 1000:
+        if batch % 200 == 0:
             loss = loss.item()
-            print(f"loss: {loss:>7f}  [batch={batch}] - Batch accuracy: {correct_samples/total_samples*100:.4f}% ({correct_samples}/{total_samples})")
+            print(f"loss: {loss:>7f}  [batch={batch:04d}] - Batch accuracy: {correct_samples/total_samples*100:.4f}% ({correct_samples}/{total_samples})")
             total_samples, correct_samples = 0, 0
 
 if __name__ == '__main__':

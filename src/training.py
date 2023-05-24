@@ -47,6 +47,7 @@ def train_loop(model, loss_fn, optimizer):
         # Compute prediction and loss
         pred = model(X)
         y = y.to(PYTORCH_DEVICE)
+        print(pred.shape, y.shape)
         loss = loss_fn(pred, y)
 
         # Backpropagation

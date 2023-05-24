@@ -17,7 +17,7 @@ possible_moves = len(cubes_dataset.CUBE_MOVES_ENCODING)
 class CubeModel(nn.Module):
     def __init__(self):
         super().__init__()
-        hidden_layer_size = cells_per_face * faces_per_cube * 12
+        hidden_layer_size = 100 # cells_per_face * faces_per_cube * 12
 
         hidden_layers = [
             nn.Linear(hidden_layer_size, hidden_layer_size),

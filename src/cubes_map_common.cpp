@@ -46,6 +46,7 @@ void solve_cubes_map(const CubesMap& cubesMap) {
         StdCube std_cube = it.first;
         char move = it.second;
 
+        // Debugging block
         if (is_solved(std_cube.data())) {
             // If the cube is already solved, ERROR
             std::cout << std::endl << "ERROR: Cube already solved" << std::endl;
@@ -71,6 +72,10 @@ void solve_cubes_map(const CubesMap& cubesMap) {
             // Apply the reversed move
             char reverse = get_reverse_move(move);
             perform_action_short(std_cube.data(), reverse);
+
+            if (is_solved(std_cube.data())) {
+                break;
+            }
 
             // Go to the next cube
             // If the cube is not in the map, this will crash

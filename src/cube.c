@@ -14,6 +14,8 @@ void reset_cube(T_CUBE cube);
 T_CUBE create_cube() {
     // Remember to free the cube!
     T_CUBE cube = (T_CUBE) malloc(6 * sizeof(T_CUBE_FACE));
+    // Zero out the cube
+    memset(cube, 0, 6 * sizeof(T_CUBE_FACE));
     reset_cube(cube);
     return cube;
 }

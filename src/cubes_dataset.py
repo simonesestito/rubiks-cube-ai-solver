@@ -9,7 +9,7 @@ import torch.utils.data
 
 CUBES_MAP_FILE = os.getenv('CUBES_MAP_FILE', 'cubes_map.bin')
 
-cubes_size = 8-5
+cubes_size = 8-4
 
 class CubeSample(ctypes.Structure):
     _fields_ = [

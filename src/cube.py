@@ -197,3 +197,15 @@ class Cube:
       for row in range(2)
       for col in range(2)
     ]).unsqueeze(0).float()
+
+  def copy(self):
+    return Cube([
+      [
+        [
+          self.get_cell(face, row, col)
+          for col in range(2)
+        ]
+        for row in range(2)
+      ]
+      for face in range(6)
+    ])

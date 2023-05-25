@@ -94,11 +94,6 @@ void create_cubes_map() {
             perform_action_short(std_cube.data(), move);
             moves_count++;
 
-            // Print every number of std_cube in a line
-            for (uint16_t face : std_cube)
-                std::cout << face << " ";
-            std::cout << std::endl;
-
             if (is_solved(std_cube.data()))
                 break;
 
@@ -146,8 +141,6 @@ void create_cubes_map() {
         // After having written all the cubes, write the last move
         file.write(&move, 1);
         bytes_written++;
-
-        std::cout << bytes_written << '\n';
     }
 
     file.flush();

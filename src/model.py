@@ -20,9 +20,9 @@ class CubeModel(nn.Module):
         hidden_layers = [
             nn.Linear(hidden_layer_size, hidden_layer_size),
             nn.ReLU(),
-        ] * 6
+        ] * 3
 
-        self.lstm = nn.LSTM(24, hidden_layer_size, num_layers=6, batch_first=True)
+        self.lstm = nn.LSTM(24, hidden_layer_size, num_layers=3, batch_first=True)
 
         self.mlp = nn.Sequential(
             *hidden_layers,

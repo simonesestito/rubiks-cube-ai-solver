@@ -7,7 +7,7 @@ import torch.optim
 from sklearn.model_selection import KFold
 import numpy as np
 
-num_folds = 5
+num_folds = 4
 
 indices = np.arange(len(training.dataset))
 kfold = KFold(n_splits=num_folds, shuffle=True)

@@ -41,6 +41,7 @@ void create_cubes_map() {
 
     // Create the map of the cubes at the previous stage
     auto previous_stage = new CubesMap();
+    auto to_save = new CubesMap();
     auto all_cubes = std::unordered_set<StdCube, CubeHasher>();
 
     // Insert the basic cube
@@ -68,6 +69,9 @@ void create_cubes_map() {
                     // Add it to the full map
                     all_cubes.insert(std_cube);
                     all_cubes_map->try_emplace(std_cube, get_reverse_move(move));
+
+                    if (i > MAX_MOVES_STAGES-MINUS_MOVES)
+                        to_save->try_emplace(std_cube, get_reverse_move(move));
                 }
             }
         }
@@ -105,12 +109,13 @@ void create_cubes_map() {
         break;
     }
 
+    delete previous_stage;
 
-    // For each cube in previous_stage, save all the previous cubes
+    // For each cube in to_save, save all the previous cubes
     // in a final file
     std::ofstream file("cubes_map.bin", std::ios::binary | std::ios::out);
     int it_written = 0;
-    for (const auto& it : *previous_stage) {
+    for (const auto& it : *to_save) {
         it_written++;
         // Create a copy of the cube
         std_cube = it.first;
@@ -135,6 +140,14 @@ void create_cubes_map() {
             perform_action_short(std_cube.data(), move);
 
             // Get the next move
+            if (all_cubes_map->find(std_cube) == all_cubes_map->end()) {
+                // Print the cube
+                std::cout << "Cube not found at step " << _ << ": ";
+                for (int face = 0; face < 6; face++) {
+                    std::cout << std_cube[face] << " ";
+                }
+                std::cout << std::endl;
+            }
             move = all_cubes_map->find(std_cube)->second;
         }
 
@@ -147,9 +160,7 @@ void create_cubes_map() {
     file.close();
     std::cout << "Written " << it_written << " cubes" << std::endl;
 
-    std::cout << "Cubes map created, " << previous_stage->size() << " cubes, " << moves_count << " moves" << std::endl;
-
-    delete previous_stage;
+    std::cout << "Cubes map created, " << to_save->size() << " cubes, " << moves_count << " moves" << std::endl;
 }
 
 int main() {

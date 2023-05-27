@@ -33,8 +33,9 @@ _lib.get_cubes_len.argtypes = [
 ]
 
 class CubesDataloader(torch.utils.data.Dataset):
-    def __init__(self, filename = CUBES_MAP_FILE):
+    def __init__(self, filename = CUBES_MAP_FILE, cast = 'tensor'):
         self.filename = filename
+        self.cast = cast
     
     def __len__(self):
         total_len = _lib.get_cubes_len(ctypes.c_char_p(self.filename.encode('ascii')))
@@ -47,7 +48,14 @@ class CubesDataloader(torch.utils.data.Dataset):
         if not success:
             return None
         cubes_arr = cube_sample.cube
-        return torch.reshape(torch.Tensor(cubes_arr), (cubes_size,24)), CUBE_MOVES_ENCODING[cube_sample.move.decode('ascii')]
+        if self.cast == 'tensor':
+            return torch.reshape(torch.Tensor(cubes_arr), (cubes_size,24)), CUBE_MOVES_ENCODING[cube_sample.move.decode('ascii')]
+        elif self.cast == 'cube':
+            return [
+                    Cube(c) for c in cubes_arr
+            ], cube_sample.move.decode('ascii')
+        else:
+            return cubes_arr, cube_sample.move.decode('ascii')
 
 CUBE_MOVES_ENCODING = {
     'U': 0,
@@ -64,3 +72,24 @@ CUBE_MOVES_ENCODING = {
     'b': 11,
     # Also, remove the solved cube from the dataset
 }
+
+if __name__ == '__main__':
+    # Test!
+    dataset = CubesDataloader(cast='cube')
+    # Take a cubes_seq [A,B,C,D]
+    cubes_seq, move = dataset[200]
+    assert len(cubes_seq) == 4
+    # Check if there is a sequence with [B,C,D,_]
+    e = cubes_seq[-1].copy()
+    e.perform_action(move)
+    assert not e.is_solved()
+
+    from progressbar import progressbar
+    for i in progressbar(range(len(dataset))):
+        cc, _ = dataset[i]
+        b, c, d, _ = cc
+        if b == cubes_seq[1] and c == cubes_seq[2] and d == cubes_seq[3]:
+            print('YESSSSSS')
+            break
+    assert False
+

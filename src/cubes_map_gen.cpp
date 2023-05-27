@@ -140,7 +140,7 @@ void create_cubes_map() {
             perform_action_short(std_cube.data(), move);
 
             // Get the next move
-            if (all_cubes_map->find(std_cube) == all_cubes_map->end()) {
+            if (to_save->find(std_cube) == to_save->end()) {
                 // Print the cube
                 std::cout << "Cube not found at step " << _ << ": ";
                 for (int face = 0; face < 6; face++) {

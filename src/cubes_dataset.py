@@ -6,6 +6,7 @@ import ctypes
 import os
 import torch
 import torch.utils.data
+from cube import Cube
 
 CUBES_MAP_FILE = os.getenv('CUBES_MAP_FILE', 'cubes_map.bin')
 
@@ -74,8 +75,58 @@ CUBE_MOVES_ENCODING = {
 }
 
 if __name__ == '__main__':
+    from progressbar import progressbar
+    import random
+
+    def random_cube(n_moves=4):
+        cube = Cube()
+        done_moves = []
+        for _ in range(n_moves):
+            move = random.choice(
+                list(CUBE_MOVES_ENCODING.keys())
+            )
+            cube.perform_action(move)
+            rev_move = move.upper() if move.islower() else move.lower()
+            done_moves.append(rev_move)
+
+        cc = cube.copy()
+        for move in done_moves[::-1]:
+            cc.perform_action(move)
+        assert cc.is_solved()
+        return cube, done_moves
+
+    def find_cubes(cubes_seq, move):
+        exp = cubes_seq[-1].copy()
+        exp.perform_action(move)
+
+        assert not cubes_seq[-1].is_solved()
+        assert not exp.is_solved()
+
+        for i in progressbar(range(len(dataset))):
+            cc, m = dataset[i]
+            assert len(cc) == 4
+            b, c, d, e = cc
+            if b == cubes_seq[1] and c == cubes_seq[2] and d == cubes_seq[3]:
+                if e != exp:
+                    print('\nE\n', e)
+                    print('\n\nExp\n', exp)
+                assert e == exp
+                return [b, c, d, e], m
+        else:
+            assert False
+
     # Test!
     dataset = CubesDataloader(cast='cube')
+    cube, moves = random_cube(n_moves=8)
+    a, b, c, d = None, None, None, cube
+    for m in moves[::-1][:4]:
+        e = d.copy()
+        e.perform_action(m)
+        a, b, c, d = b, c, d, e
+    # Assert it can be found
+#    find_cubes([a,b,c,d], moves[::-1][4])
+    print('\n\n=================\n\n')
+
     # Take a cubes_seq [A,B,C,D]
     cubes_seq, move = dataset[200]
     assert len(cubes_seq) == 4
@@ -84,12 +135,15 @@ if __name__ == '__main__':
     e.perform_action(move)
     assert not e.is_solved()
 
-    from progressbar import progressbar
-    for i in progressbar(range(len(dataset))):
-        cc, _ = dataset[i]
-        b, c, d, _ = cc
-        if b == cubes_seq[1] and c == cubes_seq[2] and d == cubes_seq[3]:
-            print('YESSSSSS')
+    a, b, c, d = cubes_seq
+    while not d.is_solved():
+        print('\n', d)
+        (a, b, c, d), move = find_cubes([a,b,c,d], move)
+        e = d.copy()
+        e.perform_action(move)
+        if e.is_solved():
+            print('\n', e)
             break
-    assert False
+
+
 

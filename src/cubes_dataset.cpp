@@ -26,8 +26,6 @@ extern "C" size_t get_cubes_len(const char* filename) {
     stream.seekg(0, std::ios::end);
     size_t file_size = stream.tellg();
     stream.close();
-    std::cout << "File size: " << file_size << std::endl;
-    std::cout << "Sample size: " << sample_size << std::endl;
     return file_size / sample_size;
 }
 

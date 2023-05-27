@@ -7,7 +7,7 @@ import os
 PYTORCH_DEVICE = os.getenv('PYTORCH_DEVICE', 'cuda')
 print('[pytorch] Using device:', PYTORCH_DEVICE)
 
-assert torch.cuda.is_available(), 'CUDA is not available'
+assert PYTORCH_DEVICE != 'cuda' or torch.cuda.is_available(), 'CUDA is not available'
 
 # Load model, if present
 if os.path.isfile('model.ckpt'):

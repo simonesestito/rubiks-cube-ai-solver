@@ -7,68 +7,67 @@
 
 struct CubeSample
 {
-    uint8_t cube[6][2][2];
+    uint8_t cube[MAX_MOVES_STAGES - MINUS_MOVES][6][2][2];
     char move;
 };
+
+size_t sample_size = (
+    (MAX_MOVES_STAGES - MINUS_MOVES)  // how many cubes are in one sample
+    * 1  // cube cell
+    * 6  // faces
+    * 2  // rows
+    * 2  // cols
+    + 1  // move
+);
+
+extern "C" size_t get_cubes_len(const char* filename) {
+    // Get the size of the file, divided by sample_size
+    std::ifstream stream(filename, std::ios::binary | std::ios::in);
+    stream.seekg(0, std::ios::end);
+    size_t file_size = stream.tellg();
+    stream.close();
+    return file_size / sample_size;
+}
 
 /**
  * Read cubes LIST from a file on disk.
  * Follow the same binary format as save_cube_to_file.
  */
-extern "C" size_t read_cubes_list(CubeSample *samples, const char *filename, const int batch_no, int limit_batches)
+extern "C" int read_cube(CubeSample *sample, const char *filename, const size_t sample_no)
 {
     std::ifstream stream(filename, std::ios::binary | std::ios::in);
+    // Since each sample is X bytes long, we can seek to the
+    // correct position in the file by multiplying the sample
+    // size by the sample number.
+    //
+    // Check if the file is big enough
+    stream.seekg(0, std::ios::end);
+    size_t file_size = stream.tellg();
+    if (sample_no * sample_size >= file_size) {
+        return 0;
+    }
 
-    // Read 64K block at a time
-    char buffer[65536];
-    stream.seekg(batch_no * 65536);
-    stream.read(buffer, 65536);
-    std::size_t read_bytes = static_cast<std::size_t>(stream.gcount());
+    stream.seekg(sample_size * sample_no);
 
-    std::size_t read_file_total = 0;
-    size_t samples_i = 0;
-
-    while (read_bytes > 0 && limit_batches-- > 0)
-    {
-        // Parse current read buffer
-        std::size_t cursor = 0;
-
-        // Read all cube entries in the buffer
-        while (read_bytes - cursor >= 13)
-        {
-            // Read the cube faces, as 6 uint16_t (see cube.h)
-            uint16_t faces[6] = {0};
-            for (int i = 0; i < 6; i++)
-            {
-                faces[i] = static_cast<uint16_t>(static_cast<unsigned char>(buffer[cursor++]));
-                faces[i] |= static_cast<uint16_t>(static_cast<unsigned char>(buffer[cursor++]) << 8);
-            }
-
-            // Read the move (char)
-            char move = buffer[cursor++];
-
-            // Insert the cube inside our LIST
-            T_CUBE cube = (T_CUBE)faces;
-            for (int face = 0; face < 6; face++)
-            {
-                for (int row = 0; row < 2; row++)
-                {
-                    for (int col = 0; col < 2; col++)
-                    {
-                        samples[samples_i].cube[face][row][col] = GET_CUBE(cube[face], row, col);
-                    }
+    // Read the cube
+    for (int i = 0; i < MAX_MOVES_STAGES - MINUS_MOVES; i++) {
+        for (int face = 0; face < 6; face++) {
+            for (int row = 0; row < 2; row++) {
+                for (int col = 0; col < 2; col++) {
+                    char c;
+                    stream.read(&c, 1);
+                    sample->cube[i][face][row][col] = c;
                 }
             }
-            samples[samples_i].move = get_reverse_move(move);
-            samples_i++;
         }
-
-        // Read next buffer chunk, if any
-        stream.read(buffer, 65536);
-        read_bytes = static_cast<std::size_t>(stream.gcount());
     }
+
+    // Read the move
+    char move;
+    stream.read(&move, 1);
+    sample->move = move;
 
     stream.close();
 
-    return samples_i;
+    return 1;
 }

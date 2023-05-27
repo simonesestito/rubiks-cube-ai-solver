@@ -178,6 +178,18 @@ class Cube:
             return False
     return True
   
+  def __ne__(self, other):
+    return not self.__eq__(other)
+  
+  def __hash__(self):
+    seed = 0
+    for face in range(6):
+      for row in range(2):
+        for col in range(2):
+          i = self.get_cell(face, row, col)
+          seed ^= i + 0x9e3779b9 + (seed << 6) + (seed >> 2)
+    return seed
+  
   def to_tensor(self):
     return torch.tensor([
       self.get_cell(face, row, col)
@@ -185,3 +197,15 @@ class Cube:
       for row in range(2)
       for col in range(2)
     ]).unsqueeze(0).float()
+
+  def copy(self):
+    return Cube([
+      [
+        [
+          self.get_cell(face, row, col)
+          for col in range(2)
+        ]
+        for row in range(2)
+      ]
+      for face in range(6)
+    ])

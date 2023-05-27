@@ -21,7 +21,7 @@ print(model)
 
 # Hyper-parameters
 LEARNING_RATE = 0.01
-BATCH_SIZE = 3000
+BATCH_SIZE = 10_000
 EPOCHS = 5
 
 print('[pytorch] Using hyper-parameters:')

@@ -17,9 +17,9 @@ def random_cube(n_moves=8):
         done_moves.append(rev_move)
     return cube, done_moves
 
-def test_solution(max_moves):
+def test_solution(max_moves, n_moves):
     # Need to fetch the next 3 right optimal moves
-    new_cube, moves = random_cube()
+    new_cube, moves = random_cube(n_moves=n_moves)
     cubes = [ new_cube ]
     for move in moves[::-1][:3]:
         new_cube = cubes[-1].copy()
@@ -56,7 +56,7 @@ def eval_model():
         
         moves_avg = 0
         for _ in progressbar(range(total_samples)):
-            solved_in = test_solution(max_moves=20)
+            solved_in = test_solution(max_moves=20, n_moves=9)
             if solved_in <= 20:
                 correct_samples += 1
                 moves_avg += solved_in

@@ -5,7 +5,7 @@ from cubes_dataset import CUBE_MOVES_ENCODING, CubesDataloader
 from training import PYTORCH_DEVICE, model
 from progressbar import progressbar
 
-def random_cube(n_moves=4):
+def random_cube(n_moves=8):
     cube = Cube()
     done_moves = []
     for _ in range(n_moves):
@@ -16,20 +16,6 @@ def random_cube(n_moves=4):
         rev_move = move.upper() if move.islower() else move.lower()
         done_moves.append(rev_move)
     return cube, done_moves
-
-# def is_known(cubes_seq):
-#     cubes_seq = cubes_seq[-4:]
-#     assert not cubes_seq[-1].is_solved()
-#     cubes_seq = [ c.to_tensor() for c in cubes_seq ]
-#     cubes_seq = torch.cat(cubes_seq).reshape(4,24)
-#     data = CubesDataloader()
-#     for i in progressbar(range(len(data))):
-#         t = data[i][0]
-#         assert t.shape == cubes_seq.shape
-#         assert t.dtype == cubes_seq.dtype
-#         if torch.equal(t, cubes_seq):
-#             return True
-#     return False
 
 def test_solution(max_moves):
     # Need to fetch the next 3 right optimal moves
@@ -57,33 +43,28 @@ def test_solution(max_moves):
             list(CUBE_MOVES_ENCODING.keys())
             [list(CUBE_MOVES_ENCODING.values()).index(move_i)]
         )
-        print(move_i, move, moves[::-1][len(cubes)-1])
         new_cube = cubes[-1].copy()
         new_cube.perform_action(move)
         cubes.append(new_cube)
-
-        test_cube = cubes[-2].copy()
-        test_cube.perform_action(
-                moves[::-1][len(cubes)-2]
-        )
-        print(test_cube)
-        assert test_cube.is_solved()
-    print()
-    return len(cubes) <= max_moves
+    return len(cubes)
 
 def eval_model():
     with torch.no_grad():
         model.eval()
         # Test real world cases
-        total_samples, correct_samples = 100, 0
+        total_samples, correct_samples = 10_000, 0
         
-        for _ in range(total_samples):#progressbar(range(total_samples)):
-            if test_solution(max_moves=4):
+        moves_avg = 0
+        for _ in progressbar(range(total_samples)):
+            solved_in = test_solution(max_moves=20)
+            if solved_in <= 20:
                 correct_samples += 1
+                moves_avg += solved_in
 
         # Result
         acc = correct_samples * 100 / total_samples
         print(f'Accuracy: {acc:.4f} ({correct_samples} / {total_samples})')
+        print(f'Average moves: {moves_avg / correct_samples:.4f}')
 
 if __name__ == '__main__':
     eval_model()

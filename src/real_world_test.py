@@ -1,9 +1,10 @@
 import torch
 import random
 from cube import Cube
-from cubes_dataset import CUBE_MOVES_ENCODING, CubesDataloader
+from cubes_dataset import CUBE_MOVES_ENCODING
 from training import PYTORCH_DEVICE, model
 from progressbar import progressbar
+import matplotlib.pyplot as plt
 
 def random_cube(n_moves=8):
     cube = Cube()
@@ -48,7 +49,7 @@ def test_solution(max_moves, n_moves):
         cubes.append(new_cube)
     return len(cubes)
 
-def eval_model():
+def eval_model(n_moves):
     with torch.no_grad():
         model.eval()
         # Test real world cases
@@ -56,15 +57,31 @@ def eval_model():
         
         moves_avg = 0
         for _ in progressbar(range(total_samples)):
-            solved_in = test_solution(max_moves=20, n_moves=9)
+            solved_in = test_solution(max_moves=n_moves*5, n_moves=n_moves)
             if solved_in <= 20:
                 correct_samples += 1
                 moves_avg += solved_in
 
         # Result
+        moves_avg /= correct_samples
         acc = correct_samples * 100 / total_samples
-        print(f'Accuracy: {acc:.4f} ({correct_samples} / {total_samples})')
-        print(f'Average moves: {moves_avg / correct_samples:.4f}')
+
+        return acc, moves_avg
 
 if __name__ == '__main__':
-    eval_model()
+    success_rates, moves_avgs = [], []
+    for i in range(5, 13):
+        success_rate, moves_avg = eval_model(n_moves=i)
+        success_rates.append(success_rate)
+        moves_avgs.append(moves_avg)
+    
+    # Plot
+    plt.grid(True, linewidth=0.5, color='#555555', linestyle='-')
+    plt.plot(range(5, 13), success_rates, label='Success rate')
+    plt.plot(range(5, 13), moves_avgs, label='Moves avg')
+
+    plt.xlabel('Number of moves')
+    plt.ylabel('Success rate (%)')
+    plt.legend()
+
+    plt.show()

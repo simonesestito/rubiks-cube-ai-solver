@@ -96,6 +96,7 @@ if __name__ == '__main__':
         return cube, done_moves
 
     def find_cubes(cubes_seq, move):
+        print(move)
         exp = cubes_seq[-1].copy()
         exp.perform_action(move)
 
@@ -108,24 +109,27 @@ if __name__ == '__main__':
             b, c, d, e = cc
             if b == cubes_seq[1] and c == cubes_seq[2] and d == cubes_seq[3]:
                 if e != exp:
-                    print('\nE\n', e)
-                    print('\n\nExp\n', exp)
+                    print('\nE (from dataset)\n', e, sep='')
+                    print('\n\nExp\n', exp, sep='')
                 assert e == exp
                 return [b, c, d, e], m
         else:
+            print('\n\nExp\n', exp, sep='')
             assert False
 
     # Test!
     dataset = CubesDataloader(cast='cube')
-    cube, moves = random_cube(n_moves=8)
-    a, b, c, d = None, None, None, cube
-    for m in moves[::-1][:4]:
-        e = d.copy()
-        e.perform_action(m)
-        a, b, c, d = b, c, d, e
-    # Assert it can be found
-#    find_cubes([a,b,c,d], moves[::-1][4])
-    print('\n\n=================\n\n')
+    # cube, moves = random_cube(n_moves=5)
+    # a, b, c, d = None, None, None, cube
+    # for m in moves[::-1][:3]:
+    #     e = d.copy()
+    #     e.perform_action(m)
+    #     print('Move ', m ,'\n', e, sep='')
+    #     a, b, c, d = b, c, d, e
+    # # Assert it can be found
+    # _, new_move = find_cubes([a,b,c,d], moves[::-1][3])
+    # assert new_move == moves[::-1][4], f'{new_move} != {moves[::-1][4]}'
+    # print('\n\n=================\n\n')
 
     # Take a cubes_seq [A,B,C,D]
     cubes_seq, move = dataset[200]
@@ -136,13 +140,16 @@ if __name__ == '__main__':
     assert not e.is_solved()
 
     a, b, c, d = cubes_seq
+    print('\n', a, sep='')
+    print('\n', b, sep='')
+    print('\n', c, sep='')
     while not d.is_solved():
-        print('\n', d)
+        print('\n', d, sep='')
         (a, b, c, d), move = find_cubes([a,b,c,d], move)
         e = d.copy()
         e.perform_action(move)
         if e.is_solved():
-            print('\n', e)
+            print('\n', e, sep='')
             break
 
 

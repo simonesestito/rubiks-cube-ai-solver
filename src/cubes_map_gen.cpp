@@ -70,7 +70,7 @@ void create_cubes_map() {
                     all_cubes.insert(std_cube);
                     all_cubes_map->try_emplace(std_cube, get_reverse_move(move));
 
-                    if (i > MAX_MOVES_STAGES-MINUS_MOVES)
+                    if (i >= MAX_MOVES_STAGES-MINUS_MOVES)
                         to_save->try_emplace(std_cube, get_reverse_move(move));
                 }
             }
@@ -87,7 +87,14 @@ void create_cubes_map() {
 
     // Finally, count the number of moves for a cube from last step
     int moves_count = 0;
-    for (const auto& initial : *previous_stage) {
+    for (const auto& initial : *to_save) {
+        if (moves_count < 150) {
+            moves_count++;
+            continue;
+        }
+
+        moves_count = 0;
+
         // Create a copy of the cube
         std_cube = initial.first;
         char move = initial.second;
@@ -111,17 +118,14 @@ void create_cubes_map() {
 
     delete previous_stage;
 
-    // For each cube in to_save, save all the previous cubes
-    // in a final file
+    // For each cube in to_save, save:
+    // cube + its previous cubes + move to solve last cube
+    std::cout << "Saving " << to_save->size() << " cubes" << std::endl;
     std::ofstream file("cubes_map.bin", std::ios::binary | std::ios::out);
-    int it_written = 0;
     for (const auto& it : *to_save) {
-        it_written++;
         // Create a copy of the cube
         std_cube = it.first;
-        char move = it.second;
-
-        int bytes_written = 0;
+        char move;
 
         // For only the amount of moves requested...
         for (int _ = 0; _ < MAX_MOVES_STAGES-MINUS_MOVES; _++) {
@@ -131,34 +135,21 @@ void create_cubes_map() {
                     for (int col = 0; col < 2; col++) {
                         char c = GET_CUBE(std_cube.data()[face], row, col);
                         file.write(&c, 1);
-                        bytes_written++;
                     }
                 }
             }
 
-            // Apply the move
-            perform_action_short(std_cube.data(), move);
-
-            // Get the next move
-            if (to_save->find(std_cube) == to_save->end()) {
-                // Print the cube
-                std::cout << "Cube not found at step " << _ << ": ";
-                for (int face = 0; face < 6; face++) {
-                    std::cout << std_cube[face] << " ";
-                }
-                std::cout << std::endl;
-            }
+            // Find then apply the move
             move = all_cubes_map->find(std_cube)->second;
+            perform_action_short(std_cube.data(), move);
         }
 
         // After having written all the cubes, write the last move
         file.write(&move, 1);
-        bytes_written++;
     }
 
     file.flush();
     file.close();
-    std::cout << "Written " << it_written << " cubes" << std::endl;
 
     std::cout << "Cubes map created, " << to_save->size() << " cubes, " << moves_count << " moves" << std::endl;
 }

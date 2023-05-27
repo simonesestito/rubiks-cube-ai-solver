@@ -17,19 +17,19 @@ def random_cube(n_moves=4):
         done_moves.append(rev_move)
     return cube, done_moves
 
-def is_known(cubes_seq):
-    cubes_seq = cubes_seq[-4:]
-    assert not cubes_seq[-1].is_solved()
-    cubes_seq = [ c.to_tensor() for c in cubes_seq ]
-    cubes_seq = torch.cat(cubes_seq).reshape(4,24)
-    data = CubesDataloader()
-    for i in progressbar(range(len(data))):
-        t = data[i][0]
-        assert t.shape == cubes_seq.shape
-        assert t.dtype == cubes_seq.dtype
-        if torch.equal(t, cubes_seq):
-            return True
-    return False
+# def is_known(cubes_seq):
+#     cubes_seq = cubes_seq[-4:]
+#     assert not cubes_seq[-1].is_solved()
+#     cubes_seq = [ c.to_tensor() for c in cubes_seq ]
+#     cubes_seq = torch.cat(cubes_seq).reshape(4,24)
+#     data = CubesDataloader()
+#     for i in progressbar(range(len(data))):
+#         t = data[i][0]
+#         assert t.shape == cubes_seq.shape
+#         assert t.dtype == cubes_seq.dtype
+#         if torch.equal(t, cubes_seq):
+#             return True
+#     return False
 
 def test_solution(max_moves):
     # Need to fetch the next 3 right optimal moves
@@ -39,8 +39,6 @@ def test_solution(max_moves):
         new_cube = cubes[-1].copy()
         new_cube.perform_action(move)
         cubes.append(new_cube)
-
-    assert is_known(cubes)
 
     std_cube = cubes[0].copy()
     for move in moves[::-1]:

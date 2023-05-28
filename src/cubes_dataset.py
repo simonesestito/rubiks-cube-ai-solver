@@ -10,7 +10,7 @@ from cube import Cube
 
 CUBES_MAP_FILE = os.getenv('CUBES_MAP_FILE', 'cubes_map.bin')
 
-cubes_size = 8-4
+cubes_size = 9-5
 
 class CubeSample(ctypes.Structure):
     _fields_ = [

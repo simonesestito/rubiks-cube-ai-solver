@@ -35,16 +35,30 @@ def load_cube_faces(faces_paths, width=100):
 
 if __name__ == '__main__':
     import sys
+    from cubes_map import CubesMap
+
+    cubes_map = CubesMap() # ONLY ONE INSTANCE!! It is super heavy
 
     rootCube = sys.argv[1] if len(sys.argv) > 1 else 'cube-0'
+    print('Loading cube', rootCube)
+
+    # Files in rootCube folder
     listFaces = [
-        os.path.join(ROOT_DRIVE, rootCube, 'face0.jpg'),
-        os.path.join(ROOT_DRIVE, rootCube, 'face1.jpg'),
-        os.path.join(ROOT_DRIVE, rootCube, 'face2.jpg'),
-        os.path.join(ROOT_DRIVE, rootCube, 'face3.jpg'),
-        os.path.join(ROOT_DRIVE, rootCube, 'face4.jpg'),
-        os.path.join(ROOT_DRIVE, rootCube, 'face5.jpg'),
+        os.path.join(ROOT_DRIVE, rootCube, f)
+        for f in os.listdir(os.path.join(ROOT_DRIVE, rootCube))
+        if os.path.isfile(os.path.join(ROOT_DRIVE, rootCube, f))
     ]
+    assert len(listFaces) == 6, "The cube must have 6 faces (= 6 photos in the folder)"
 
     cube = load_cube_faces(listFaces)
     print(cube)
+
+    # Solve
+    while not cube.is_solved():
+        next_move = cubes_map[cube]
+        if next_move is None:
+            print('ERROR: Cube is not known! Photos may be wrong, or the cube needs more than 8 moves to be solved.')
+            break
+        print('Next move:', next_move)
+        cube.perform_action(next_move)
+        print(cube)

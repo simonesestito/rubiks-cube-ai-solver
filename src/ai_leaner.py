@@ -69,6 +69,7 @@ def exit_gracefully(signum, frame):
 	global time_start
 	global best_cube
 	global max_correct
+	import sys
 
 	signal.signal(signal.SIGINT, original_sigint)
 	time_paused = time.time()
@@ -93,9 +94,11 @@ def exit_gracefully(signum, frame):
 		print('\n---------- RESUMING ----------')
 	else:
 		print('\n---------- QUITTING ----------')
+		sys.exit()
 	if 'time_start' in globals():
 		time_start += time.time() - time_paused
 	signal.signal(signal.SIGINT, exit_gracefully)
+
 
 
 original_sigint = signal.getsignal(signal.SIGINT)
@@ -515,13 +518,16 @@ def solution_attempt():
 	global max_correct
 	global att_iter
 	global flag_continue_attempt
+	global flag_continue_main 
 
 	# Dictates continuation of each attempt.
 	flag_continue_attempt = True
+	flag_continue_main = True
 
 	cube = Cube(edge_length=edge_length)
 	print('\nOriginal cube:')
 	print(cube)
+	
 
 	print('\nScrambling...')
 	cube.scramble()
@@ -609,10 +615,19 @@ def solution_attempt():
 			time_start = time.time()
 			running_num_correct = [0] * running_stats_length
 
+		if eps_threshold < 0.9:
+			flag_continue_attempt = False
+			return
+		
+
 	if flag_continue_main:
 		if len(solved_stats) > 0:
 			show_solved_stats()
 		show_best_cube_statistics(best_cube, max_correct)
+
+	
+
+	
 
 
 def main():
@@ -702,6 +717,8 @@ def main():
 
 	last_random_state = random.getstate()
 
+	
+
 	while flag_continue_main:
 		# Set the RNG seed.
 		if attempt_num == 0 and root_seed != None:
@@ -720,7 +737,66 @@ def main():
 
 		# Start a solution attempt on a new cube.
 		solution_attempt()
+		print(eps_threshold, "AOOOOOOOOOOOOOOOOOO")
 		attempt_num += 1
+		torch.save(policy_net, 'model.ckpt')
+		calculateAccuracy(policy_net)
+
+
+def calculateAccuracy(policy_net):
+	max_moves = 100
+	correct_cubes = 0
+	n_moves = 0
+	num_squares = 6 * edge_length * edge_length
+	num_states = num_squares * 6
+	total_cubes = 100
+
+	lista = np.asarray([Cube(edge_length) for x in range(total_cubes)])
+	for x in lista:
+		x.scramble()
+		state_grid = torch.arange(start=0, end=num_states, step=6, dtype=torch.int64)
+		# Gather the cube's current state.
+		squares = torch.as_tensor(x.faces.flatten(), dtype=torch.int64)
+		state = torch.zeros([num_states], dtype=torch.float32)
+		state[state_grid + squares] = 1
+		while not isSolved(x) and n_moves < max_moves:
+			action = select_action(state)
+			x.rotate(int(action))
+		if isSolved(x):
+			correct_cubes += 1
+	accuracy = correct_cubes * 100 / total_cubes
+	print(f'Accuracy: {accuracy:.4f} ({correct_cubes} / {total_cubes})')
+
+
+	# X = lista[:,np.newaxis]
+# 	print(X)
+# 	y = np.asanyarray([Cube(edge_length) for x in range(100)])
+# 	# policy_net = DQN(X)
+# 	# policy_net.load_state_dict(torch.load('model.ckpt'))
+# 	print(policy_net.forward(X))
+# 	probabilities = torch.softmax(policy_net, dim=1)
+# 	predicted_labels = torch.argmax(probabilities, dim=1)
+# 	correct_predictions = predicted_labels == y
+# 	accuracy = correct_predictions.float().mean()
+# 	print(accuracy)
+
+def isSolved(cube):
+	num_squares = 6 * cube.edge_length * cube.edge_length
+	num_correct, reward = reward_function(cube)
+	if num_correct == num_squares:
+		print('\n\nSolved!')
+		return True
+	return False
+
+
+
+
+
+	
+	
+	
+
+		
 
 
 if __name__ == '__main__':

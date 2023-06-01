@@ -46,14 +46,27 @@ def deleteImageOutline(img, points, width):
   return cv2.warpPerspective(img, match_matrix, (width, width))
 
 # Ranges of the color to detect in the image
+# color_ranges = {
+#     1 :(np.array([0, 0, 200],dtype=np.uint8),np.array([120, 100, 255],dtype=np.uint8)),
+#     3 :(np.array([0, 100, 100],dtype=np.uint8),np.array([5, 255, 255],dtype=np.uint8)),
+#     2 :(np.array([9, 130, 100],dtype=np.uint8),np.array([17, 255, 255],dtype=np.uint8)),
+#     4 :(np.array([20, 100, 100],dtype=np.uint8),np.array([25, 255, 255],dtype=np.uint8)),
+#     0 :(np.array([40, 50, 80],dtype=np.uint8),np.array([80, 255, 255],dtype=np.uint8)),
+#     5 :(np.array([90, 100, 50],dtype=np.uint8),np.array([120, 255, 255],dtype=np.uint8))
+# }
+
 color_ranges = {
-    1 :(np.array([0, 0, 200],dtype=np.uint8),np.array([120, 100, 255],dtype=np.uint8)),
-    3 :(np.array([0, 100, 100],dtype=np.uint8),np.array([5, 255, 255],dtype=np.uint8)),
-    2 :(np.array([9, 130, 100],dtype=np.uint8),np.array([17, 255, 255],dtype=np.uint8)),
-    4 :(np.array([20, 100, 100],dtype=np.uint8),np.array([25, 255, 255],dtype=np.uint8)),
-    0 :(np.array([40, 50, 80],dtype=np.uint8),np.array([80, 255, 255],dtype=np.uint8)),
-    5 :(np.array([90, 100, 50],dtype=np.uint8),np.array([120, 255, 255],dtype=np.uint8))
+    1 :(np.array([0, 0, 150],dtype=np.uint8),np.array([255, 120, 255],dtype=np.uint8)),
+    3 :(np.array([0, 120, 100],dtype=np.uint8),np.array([7, 255, 255],dtype=np.uint8)),
+    2 :(np.array([8, 110, 100],dtype=np.uint8),np.array([19, 255, 255],dtype=np.uint8)),
+    4 :(np.array([20, 110, 100],dtype=np.uint8),np.array([30, 255, 255],dtype=np.uint8)),
+    0 :(np.array([35, 110, 50],dtype=np.uint8),np.array([80, 255, 255],dtype=np.uint8)),
+    5 :(np.array([90, 110, 50],dtype=np.uint8),np.array([120, 255, 255],dtype=np.uint8)),
+    6 :(np.array([175, 120, 100],dtype=np.uint8),np.array([180, 255, 255],dtype=np.uint8))
 }
+
+
+
 
 # color_ranges = {
 #     'white':(np.array([0, 0, 200],dtype=np.uint8),np.array([120, 100, 255],dtype=np.uint8)),
@@ -65,6 +78,7 @@ color_ranges = {
 # }
 
 def getColorsFromCubeFace(cube_face_img):
+
   cube_face_hsv = cv2.cvtColor(cube_face_img, cv2.COLOR_BGR2HSV)
   cube_face_step = cube_face_img.shape[0] // 6 # Divide 3x3 face in 6x6 in order to get the center
 
@@ -73,7 +87,7 @@ def getColorsFromCubeFace(cube_face_img):
       for y in range(cube_face_step, cube_face_hsv.shape[0]-1, cube_face_step*2)
       for x in range(cube_face_step, cube_face_hsv.shape[0]-1, cube_face_step*2)
   ]
-
+  print(cube_points)
   colors = np.array([
       recognizeColor(pixel)
       for pixel in cube_points
@@ -82,9 +96,10 @@ def getColorsFromCubeFace(cube_face_img):
   # FIXME: Remove this, debug only
   for i in range(3):
     for j in range(3):
-      if colors[i,j] is None:
+      if colors[i, j] is None:
         print('Unable to recognize color', cube_points[i*3+j], 'at position', [i, j])
-
+      if colors[i, j] == 6:
+        colors[i, j] = 3
   return colors
 
 #recognize the color of the nine points took from the image
@@ -99,3 +114,23 @@ def sortFaces(cube):
     assert not (cube[i] == None).any(), "Missing colors in face " + str(i)
 
   cube.sort(key = lambda x:x[1,1])
+
+if __name__ == '__main__':
+  import cv2
+  import numpy as np
+  
+  # Load image and downscale, keeping the aspect ratio
+  origin = cv2.imread("./assets/images/cube-2/face5.jpg")
+  width = 100
+  height =int(origin.shape[0]*width/origin.shape[1])
+  img = cv2.resize(
+      origin,
+      (width,height)
+  )
+  # cv2_imshow(img)
+
+  matches = getFaceShape(img)
+  # print(matches)
+  points = getFaceVertices(matches)
+  cube_face_img = deleteImageOutline(img, points, width)
+  print(getColorsFromCubeFace(cube_face_img))

@@ -48,10 +48,12 @@ if __name__ == '__main__':
         for f in os.listdir(os.path.join(ROOT_DRIVE, rootCube))
         if os.path.isfile(os.path.join(ROOT_DRIVE, rootCube, f))
     ]
+    print(listFaces)
     assert len(listFaces) == 6, "The cube must have 6 faces (= 6 photos in the folder)"
 
     cube = load_cube_faces(listFaces)
     print(cube)
+    
 
     # Solve
     while not cube.is_solved():

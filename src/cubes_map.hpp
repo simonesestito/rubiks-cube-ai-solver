@@ -16,7 +16,7 @@ typedef std::unordered_map<StdCube, char, CubeHasher> CubesMap;
 static const char CUBE_MOVES[12] = { 'f', 'F', 'u', 'U', 'b', 'B', 'l', 'L', 'r', 'R', 'd', 'D' };
 
 static const unsigned char MAX_MOVES_STAGES = 7;
-static const char* MAP_FILENAME = "cubes_map.bin";
+static const char* MAP_FILENAME = "cubes_map_3.bin";
 
 /**
  * Get the reverse action of a move.

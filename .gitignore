@@ -7,5 +7,6 @@ cubes_map_gen
 notebooks/*.c
 __pycache__/
 cubes_map.bin
+cubes_map_3.bin
 cubes_map.bin.bak
 model.ckpt

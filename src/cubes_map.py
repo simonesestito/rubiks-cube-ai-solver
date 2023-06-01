@@ -26,7 +26,7 @@ _lib.free_cubes_map.restype = None
 _lib.free_cubes_map.argtypes = [_cube_map_type]
 
 class CubesMap:
-    def __init__(self, filename = 'cubes_map.bin'):
+    def __init__(self, filename = 'cubes_map_3.bin'):
         assert os.path.isfile(filename), 'Cubes map file not found'
         self.cube_map = _lib.load_cubes_map(filename.encode('ascii'))
 

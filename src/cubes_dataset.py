@@ -25,7 +25,7 @@ _lib.read_cubes_list.argtypes = [
     ctypes.c_int,               # limit_batches
 ]
 
-def load_cubes_dataset(batch_no, limit_batches = 1, filename = 'cubes_map.bin'):
+def load_cubes_dataset(batch_no, limit_batches = 1, filename = 'cubes_map_3.bin'):
     # Allocate cube samples
     cube_samples = np.empty(2621 * limit_batches, dtype=CubeSample)
     cubes_no = _lib.read_cubes_list(
@@ -54,7 +54,7 @@ CUBE_MOVES_ENCODING = {
     ' ': 12,
 }
 
-def load_cubes_dataset_as_tensor(batch_no, limit_batches = 1, filename = 'cubes_map.bin'):
+def load_cubes_dataset_as_tensor(batch_no, limit_batches = 1, filename = 'cubes_map_3.bin'):
     X, y = load_cubes_dataset(batch_no, limit_batches, filename)
 
     # Make X a tensor
@@ -68,7 +68,7 @@ def load_cubes_dataset_as_tensor(batch_no, limit_batches = 1, filename = 'cubes_
 
     return X, y
 
-def load_cubes_dataset_as_cubes(batch_no, limit_batches = 1, filename = 'cubes_map.bin'):
+def load_cubes_dataset_as_cubes(batch_no, limit_batches = 1, filename = 'cubes_map_3.bin'):
     X, y = load_cubes_dataset(batch_no, limit_batches, filename)
 
     # Make every X a cube

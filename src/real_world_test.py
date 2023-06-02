@@ -71,7 +71,11 @@ def eval_model(n_moves):
 if __name__ == '__main__':
     success_rates, moves_avgs = [], []
     for i in range(5, 13):
+        print()
+        print('Real world tests on cubes with', i, 'moves:')
         success_rate, moves_avg = eval_model(n_moves=i)
+        print('\tSuccess rate:', success_rate)
+        print('\tAverage moves:', moves_avg)
         success_rates.append(success_rate)
         moves_avgs.append(moves_avg)
     

@@ -10,7 +10,7 @@ Rubik's Cube solver that reads photos using OpenCV and solves it using LTSM (Lon
 
 ## OpenCV
 
-It also contains a visual part using OpenCV: please checkout **opencv** branch for that.
+It also contains a visual part using OpenCV: please checkout [**opencv**](https://github.com/simonesestito/rubiks-cube-ai-solver/tree/opencv) branch for that.
 
 # Project Usage (AI part)
 1. Clone this repository and `cd` into it

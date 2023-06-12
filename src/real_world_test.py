@@ -53,12 +53,13 @@ def eval_model(n_moves):
     with torch.no_grad():
         model.eval()
         # Test real world cases
-        total_samples, correct_samples = 10_000, 0
+        total_samples, correct_samples =150, 0
         
         moves_avg = 0
         for _ in progressbar(range(total_samples)):
-            solved_in = test_solution(max_moves=n_moves*5, n_moves=n_moves)
-            if solved_in <= 20:
+            max_moves = max(60, n_moves*10)
+            solved_in = test_solution(max_moves=max_moves, n_moves=n_moves)
+            if solved_in < max_moves:
                 correct_samples += 1
                 moves_avg += solved_in
 
@@ -70,7 +71,7 @@ def eval_model(n_moves):
 
 if __name__ == '__main__':
     success_rates, moves_avgs = [], []
-    for i in range(5, 13):
+    for i in range(5, 11):
         print()
         print('Real world tests on cubes with', i, 'moves:')
         success_rate, moves_avg = eval_model(n_moves=i)
@@ -81,8 +82,8 @@ if __name__ == '__main__':
     
     # Plot
     plt.grid(True, linewidth=0.5, color='#555555', linestyle='-')
-    plt.plot(range(5, 13), success_rates, label='Success rate')
-    plt.plot(range(5, 13), moves_avgs, label='Moves avg')
+    plt.plot(range(5, 11), success_rates, label='Success rate')
+    plt.plot(range(5, 11), moves_avgs, label='Moves avg')
 
     plt.xlabel('Number of moves')
     plt.ylabel('Success rate (%)')

@@ -12,7 +12,7 @@ assert PYTORCH_DEVICE != 'cuda' or torch.cuda.is_available(), 'CUDA is not avail
 # Load model, if present
 if os.path.isfile('model.ckpt'):
     print('[pytorch] Loading model from checkpoint...')
-    model = torch.load('model.ckpt')
+    model = torch.load('model.ckpt', map_location=torch.device(PYTORCH_DEVICE))
 else:
     print('[pytorch] Creating new model from SCRATCH...')
     model = CubeModel()
